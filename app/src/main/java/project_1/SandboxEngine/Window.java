@@ -13,6 +13,7 @@ import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
@@ -103,6 +104,9 @@ public class Window {
         glfwSetMouseButtonCallback(this.glfwWindow, MouseListener::mouseButtonCallback);
         glfwSetScrollCallback(this.glfwWindow, MouseListener::mouseScrollCallback);
 
+        //Set Keyboard callback functions
+        glfwSetKeyCallback(this.glfwWindow, KeyListener::keyCallback);
+
         //Make the OpenGL context current
         glfwMakeContextCurrent(this.glfwWindow);
 
@@ -125,6 +129,7 @@ public class Window {
             //Poll key events
             glfwPollEvents();
             //MouseListener.testMouseFunctions();
+            //KeyListener.testSpaceKeyFunction();
 
             glClearColor(1.0f,0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
