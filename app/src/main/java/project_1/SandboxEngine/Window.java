@@ -7,12 +7,18 @@ import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.glClearColor;
@@ -25,6 +31,10 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
+/**
+ * Author:  Avery Moates
+ * Date:    2/17/2024
+ */
 public class Window {
 
     private int width, height;
@@ -51,13 +61,18 @@ public class Window {
     }
 
     public void run(){
-        System.out.println("Hellow LWJGL " + Version.getVersion() + "!");
+        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
         init();
         loop();
 
         //Free the memory
         glfwFreeCallbacks(this.glfwWindow);
+        glfwDestroyWindow(this.glfwWindow);
+
+        //Terminate GLFW and free the error callback
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     public void init(){
@@ -75,11 +90,18 @@ public class Window {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
+        System.out.println("Sandbox Simulator. CS 5053 Project 1");
+
         //Create the window
         this.glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
         if(this.glfwWindow == NULL){
             throw new IllegalStateException("Failed to create GLFW Window.");
         }
+
+        //Set mouse callback functions
+        glfwSetCursorPosCallback(this.glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(this.glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(this.glfwWindow, MouseListener::mouseScrollCallback);
 
         //Make the OpenGL context current
         glfwMakeContextCurrent(this.glfwWindow);
@@ -102,6 +124,7 @@ public class Window {
         while(!glfwWindowShouldClose(this.glfwWindow)){
             //Poll key events
             glfwPollEvents();
+            //MouseListener.testMouseFunctions();
 
             glClearColor(1.0f,0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
