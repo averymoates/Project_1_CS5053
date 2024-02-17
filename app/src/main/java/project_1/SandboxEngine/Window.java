@@ -19,11 +19,11 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
-import org.lwjgl.system.*;
 
 public class Window {
 
@@ -55,6 +55,9 @@ public class Window {
 
         init();
         loop();
+
+        //Free the memory
+        glfwFreeCallbacks(this.glfwWindow);
     }
 
     public void init(){
