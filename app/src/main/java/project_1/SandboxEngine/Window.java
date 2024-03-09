@@ -23,11 +23,24 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glVertex2d;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
+import static org.lwjgl.opengl.GL11.GL_POLYGON;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 
+import java.util.*;
+
+import org.joml.Vector2d;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -43,6 +56,8 @@ public class Window {
     private long glfwWindow;
 
     private static Window window = null;
+
+    private ArrayList<Vector2d> points = null;
 
     private Window(){
 
@@ -122,17 +137,38 @@ public class Window {
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
         GL.createCapabilities();
+
+        //---------------------------------------------------------------------------------------
+        //This is where I am going to set up stuff for once
+        //---------------------------------------------------------------------------------------
+        points = new ArrayList<Vector2d>();
     }
     
     public void loop(){
         while(!glfwWindowShouldClose(this.glfwWindow)){
             //Poll key events
             glfwPollEvents();
-            //MouseListener.testMouseFunctions();
-            //KeyListener.testSpaceKeyFunction();
+            MouseListener.testMouseFunctions();
+            KeyListener.testSpaceKeyFunction();
 
             glClearColor(1.0f,0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0, this.width, this.height, 0, -1.0, 1.0);
+
+            if(MouseListener.isMouseButtonDown(0)){
+                Vector2d point = new Vector2d(MouseListener.getX(), MouseListener.getY());
+                points.add(point);
+            }
+
+            glColor3f(0.0f, 1.0f, 0.0f);
+            glBegin(GL_LINE_LOOP);
+            for(Vector2d point: points){
+                glVertex2d(point.x, point.y);
+            }
+            glEnd();
 
             glfwSwapBuffers(this.glfwWindow);
         }

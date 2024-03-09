@@ -136,7 +136,7 @@ public class MouseListener {
     }
 
     /**
-     * Debug function for testing the mouse's functions
+     * Debug function for testing MouseListener's callback functions
      */
     public static void testMouseFunctions(){
         System.out.println("X position:\t" + MouseListener.getX() + "\n" +

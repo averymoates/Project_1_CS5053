@@ -44,6 +44,9 @@ public class KeyListener {
         }
     }
 
+    /**
+     * Debug function to test KeyListener's callback functions
+     */
     public static void testSpaceKeyFunction(){
         System.out.println("Space key pressed:\t" + KeyListener.get().keyPressed[GLFW_KEY_SPACE] + "\n");
     }
