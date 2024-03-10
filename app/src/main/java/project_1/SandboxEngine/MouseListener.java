@@ -3,6 +3,8 @@ package project_1.SandboxEngine;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
+import org.joml.Vector2d;
+
 /**
  * Author:  Avery Moates
  * Date:    2/17/2024
@@ -14,6 +16,8 @@ public class MouseListener {
     private double xPos, yPos, lastX, lastY;
     private boolean mouseButtonPressed[] = new boolean[3];
     private boolean isDragging;
+    
+    final private static double SQUARE_SIZE = 20.0;
     
     
     private MouseListener(){
@@ -135,12 +139,21 @@ public class MouseListener {
         }
     }
 
+    public static Vector2d mouse_loc_in_screen(){
+        double new_x = Math.floor(MouseListener.getX()/SQUARE_SIZE);
+        double new_y = Math.floor(MouseListener.getY()/SQUARE_SIZE);
+
+        return new Vector2d(new_x,new_y);
+    }
+
     /**
      * Debug function for testing MouseListener's callback functions
      */
     public static void testMouseFunctions(){
         System.out.println("X position:\t" + MouseListener.getX() + "\n" +
                            "Y position:\t" + MouseListener.getY() + "\n" +
+                           "New X position:\t" + MouseListener.mouse_loc_in_screen().x + "\n" +
+                           "New Y position:\t" + MouseListener.mouse_loc_in_screen().y + "\n" +
                            "Button [0] pressed:\t" + MouseListener.isMouseButtonDown(0) + "\n" +
                            "Button [1] pressed:\t" + MouseListener.isMouseButtonDown(1) + "\n" +
                            "Button [2] pressed:\t" + MouseListener.isMouseButtonDown(2) + "\n" +

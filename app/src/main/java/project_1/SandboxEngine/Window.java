@@ -45,6 +45,8 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
+import project_1.SandboxEngine.Utilities.ShapeMaker;
+
 /**
  * Author:  Avery Moates
  * Date:    2/17/2024
@@ -57,7 +59,7 @@ public class Window {
 
     private static Window window = null;
 
-    private ArrayList<Vector2d> points = null;
+    final private static double SQUARE_SIZE = 20.0;
 
     private Window(){
 
@@ -141,7 +143,6 @@ public class Window {
         //---------------------------------------------------------------------------------------
         //This is where I am going to set up stuff for once
         //---------------------------------------------------------------------------------------
-        points = new ArrayList<Vector2d>();
     }
     
     public void loop(){
@@ -158,17 +159,11 @@ public class Window {
             glLoadIdentity();
             glOrtho(0, this.width, this.height, 0, -1.0, 1.0);
 
-            if(MouseListener.isMouseButtonDown(0)){
-                Vector2d point = new Vector2d(MouseListener.getX(), MouseListener.getY());
-                points.add(point);
-            }
-
+            double x_value = MouseListener.mouse_loc_in_screen().x*SQUARE_SIZE;
+            double y_value = MouseListener.mouse_loc_in_screen().y*SQUARE_SIZE;
             glColor3f(0.0f, 1.0f, 0.0f);
-            glBegin(GL_LINE_LOOP);
-            for(Vector2d point: points){
-                glVertex2d(point.x, point.y);
-            }
-            glEnd();
+            ShapeMaker.fill_square(x_value, y_value, SQUARE_SIZE);
+
 
             glfwSwapBuffers(this.glfwWindow);
         }
