@@ -8,6 +8,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
@@ -56,6 +57,9 @@ public class Window {
     private int width, height;
     private String title;
     private long glfwWindow;
+
+    private int[] w = null;
+    private int[] h = null;
 
     private static Window window = null;
 
@@ -141,12 +145,19 @@ public class Window {
         GL.createCapabilities();
 
         //---------------------------------------------------------------------------------------
-        //This is where I am going to set up stuff for once
+        //This is where I am going to set up stuff for things that only need to called once
         //---------------------------------------------------------------------------------------
+        w = new int[1];
+        h = new int[1];
+        glfwGetFramebufferSize(glfwWindow, w, h);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, w[0], h[0], 0, -1.0, 1.0);
     }
     
     public void loop(){
         while(!glfwWindowShouldClose(this.glfwWindow)){
+           
             //Poll key events
             glfwPollEvents();
             MouseListener.testMouseFunctions();
@@ -154,10 +165,6 @@ public class Window {
 
             glClearColor(1.0f,0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
-
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            glOrtho(0, this.width, this.height, 0, -1.0, 1.0);
 
             double x_value = MouseListener.mouse_loc_in_screen().x*SQUARE_SIZE;
             double y_value = MouseListener.mouse_loc_in_screen().y*SQUARE_SIZE;
