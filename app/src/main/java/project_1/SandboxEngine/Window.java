@@ -30,6 +30,7 @@ import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glOrtho;
 import static org.lwjgl.opengl.GL11.glVertex2d;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
 import static org.lwjgl.opengl.GL11.GL_POLYGON;
@@ -149,10 +150,6 @@ public class Window {
         //---------------------------------------------------------------------------------------
         w = new int[1];
         h = new int[1];
-        glfwGetFramebufferSize(glfwWindow, w, h);
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, w[0], h[0], 0, -1.0, 1.0);
     }
     
     public void loop(){
@@ -163,6 +160,15 @@ public class Window {
             MouseListener.testMouseFunctions();
             KeyListener.testSpaceKeyFunction();
 
+            glfwGetFramebufferSize(glfwWindow, w, h);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glViewport(0, 0, w[0], h[0]);
+            glOrtho(0, w[0], h[0], 0, -1.0, 1.0);
+            
+            System.out.println("Width is: " + w[0]);
+            System.out.println("Height is: " + h[0] + "\n");
+
             glClearColor(1.0f,0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
@@ -170,7 +176,6 @@ public class Window {
             double y_value = MouseListener.mouse_loc_in_screen().y*SQUARE_SIZE;
             glColor3f(0.0f, 1.0f, 0.0f);
             ShapeMaker.fill_square(x_value, y_value, SQUARE_SIZE);
-
 
             glfwSwapBuffers(this.glfwWindow);
         }
