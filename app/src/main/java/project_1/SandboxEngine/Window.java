@@ -160,14 +160,7 @@ public class Window {
             MouseListener.testMouseFunctions();
             KeyListener.testSpaceKeyFunction();
 
-            glfwGetFramebufferSize(glfwWindow, w, h);
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            glViewport(0, 0, w[0], h[0]);
-            glOrtho(0, w[0], h[0], 0, -1.0, 1.0);
-            
-            System.out.println("Width is: " + w[0]);
-            System.out.println("Height is: " + h[0] + "\n");
+            set_up_screen_coords(false);
 
             glClearColor(1.0f,0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -180,5 +173,18 @@ public class Window {
             glfwSwapBuffers(this.glfwWindow);
         }
 
+    }
+
+    private void set_up_screen_coords(boolean display){
+        glfwGetFramebufferSize(glfwWindow, w, h);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glViewport(0, 0, w[0], h[0]);
+        glOrtho(0, w[0], h[0], 0, -1.0, 1.0);
+
+        if(display){
+            System.out.println("Width is: " + w[0]);
+            System.out.println("Height is: " + h[0] + "\n");
+        }
     }
 }
