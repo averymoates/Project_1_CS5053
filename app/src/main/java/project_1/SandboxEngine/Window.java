@@ -65,8 +65,6 @@ public class Window {
 
     private static Window window = null;
 
-    final private static double SQUARE_SIZE = 20.0;
-
     private Window(){
 
         this.width = 1920;
@@ -171,10 +169,10 @@ public class Window {
             SceneManager.update();
             SceneManager.draw();
 
-            double x_value = MouseListener.mouse_loc_in_screen().x*SQUARE_SIZE;
-            double y_value = MouseListener.mouse_loc_in_screen().y*SQUARE_SIZE;
+            double x_value = MouseListener.mouse_loc_in_screen().x*SceneManager.get_square_size();
+            double y_value = MouseListener.mouse_loc_in_screen().y*SceneManager.get_square_size();
             glColor3f(0.0f, 1.0f, 0.0f);
-            ShapeMaker.fill_square(x_value, y_value, SQUARE_SIZE);
+            ShapeMaker.fill_square(x_value, y_value, SceneManager.get_square_size());
 
 
 

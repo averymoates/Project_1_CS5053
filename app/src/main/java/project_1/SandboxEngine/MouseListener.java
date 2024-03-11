@@ -5,6 +5,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 import org.joml.Vector2d;
 
+import project_1.SandboxEngine.Scene.SceneManager;
+
 /**
  * Author:  Avery Moates
  * Date:    2/17/2024
@@ -16,9 +18,6 @@ public class MouseListener {
     private double xPos, yPos, lastX, lastY;
     private boolean mouseButtonPressed[] = new boolean[3];
     private boolean isDragging;
-    
-    final private static double SQUARE_SIZE = 20.0;
-    
     
     private MouseListener(){
         this.scrollX = 0.0;
@@ -140,8 +139,8 @@ public class MouseListener {
     }
 
     public static Vector2d mouse_loc_in_screen(){
-        double new_x = Math.floor(MouseListener.getX()/SQUARE_SIZE);
-        double new_y = Math.floor(MouseListener.getY()/SQUARE_SIZE);
+        double new_x = Math.floor(MouseListener.getX()/SceneManager.get_square_size());
+        double new_y = Math.floor(MouseListener.getY()/SceneManager.get_square_size());
 
         return new Vector2d(new_x,new_y);
     }

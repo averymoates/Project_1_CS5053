@@ -10,6 +10,7 @@ import project_1.SandboxEngine.Utilities.ShapeMaker;
 public class Blank_pixel extends Pixel{
 
     private int time_step;
+    private static int fall_rate = 10;
 
     public Blank_pixel(Vector2d position){
         super(0, 0, 0, "Blank", 0, position);
@@ -25,7 +26,7 @@ public class Blank_pixel extends Pixel{
     @Override
     public void update() {
         ++time_step;
-        if(time_step == 60){
+        if(time_step == fall_rate){
             time_step = 0;
             this.position.y += 1;
             if(this.position.y > Math.floor(SceneManager.get_height()/this.get_sqaure_size())){

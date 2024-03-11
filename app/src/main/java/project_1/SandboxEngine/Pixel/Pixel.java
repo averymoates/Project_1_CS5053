@@ -2,6 +2,8 @@ package project_1.SandboxEngine.Pixel;
 
 import org.joml.Vector2d;
 
+import project_1.SandboxEngine.Scene.SceneManager;
+
 abstract public class Pixel {
 
     //Values that will be used to color the pixel
@@ -10,7 +12,7 @@ abstract public class Pixel {
     protected float blue;
 
     //Size of each of the squares. This need to stay the for all pixels
-    protected double square_size = 20.0;
+    protected double square_size = SceneManager.get_square_size();
 
     //A way to identify each of the different pixels
     protected String name;

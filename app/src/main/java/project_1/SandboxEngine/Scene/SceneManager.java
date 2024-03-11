@@ -17,6 +17,9 @@ public class SceneManager {
 
     private static SceneManager instance = null;
 
+    //Change this value to change the size of all the pixels
+    final private static double SQUARE_SIZE = 10;
+
     private ArrayList<Pixel> pixels = null;
 
     private int width;
@@ -90,6 +93,9 @@ public class SceneManager {
         return SceneManager.get().height;
     }
 
-
+    public static double get_square_size(){
+        SceneManager.get();
+        return SceneManager.SQUARE_SIZE;
+    }
     
 }
