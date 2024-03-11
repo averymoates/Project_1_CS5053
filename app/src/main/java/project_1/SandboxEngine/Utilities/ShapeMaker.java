@@ -5,6 +5,12 @@ import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glEnd;
 import static org.lwjgl.opengl.GL11.glVertex2d;
 
+/**
+ * Author: Avery Moates
+ * Date: 3/11/2024
+ * 
+ * Purpose: Class of instructions on how to draw certain basic shapes
+ */
 public class ShapeMaker {
 
     private static ShapeMaker instance = null;

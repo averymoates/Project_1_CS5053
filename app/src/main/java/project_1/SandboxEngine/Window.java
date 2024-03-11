@@ -157,13 +157,13 @@ public class Window {
            
             //Poll key events
             glfwPollEvents();
-            MouseListener.testMouseFunctions();
-            KeyListener.testSpaceKeyFunction();
+            // MouseListener.testMouseFunctions();
+            // KeyListener.testSpaceKeyFunction();
             
 
-            set_up_screen_coords(true);
+            set_up_screen_coords(false);
 
-            glClearColor(1.0f,0.0f, 0.0f, 1.0f);
+            glClearColor(173.0f/256.0f,172.0f/256.0f, 166.0f/256.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             SceneManager.update();
@@ -171,7 +171,7 @@ public class Window {
 
             double x_value = MouseListener.mouse_loc_in_screen().x*SceneManager.get_square_size();
             double y_value = MouseListener.mouse_loc_in_screen().y*SceneManager.get_square_size();
-            glColor3f(0.0f, 1.0f, 0.0f);
+            glColor3f(105.0f/256.0f, 103.0f/256.0f, 99.0f/256.0f);
             ShapeMaker.fill_square(x_value, y_value, SceneManager.get_square_size());
 
 

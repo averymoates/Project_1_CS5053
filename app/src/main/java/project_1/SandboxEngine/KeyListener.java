@@ -4,6 +4,10 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
+/**
+ * Author: Avery Moates
+ * Date: 3/11/2024
+ */
 public class KeyListener {
     private static KeyListener instance = null;
     private boolean keyPressed[] = new boolean[350];

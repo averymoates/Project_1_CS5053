@@ -138,6 +138,11 @@ public class MouseListener {
         }
     }
 
+    /**
+     * Function to return a Vector that can be used to draw a pixel on the screen
+     * 
+     * @return  Vector2D
+     */
     public static Vector2d mouse_loc_in_screen(){
         double new_x = Math.floor(MouseListener.getX()/SceneManager.get_square_size());
         double new_y = Math.floor(MouseListener.getY()/SceneManager.get_square_size());

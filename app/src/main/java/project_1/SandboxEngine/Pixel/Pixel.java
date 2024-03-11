@@ -4,6 +4,12 @@ import org.joml.Vector2d;
 
 import project_1.SandboxEngine.Scene.SceneManager;
 
+/**
+ * Author: Avery Moates
+ * Date:   3/11/2024
+ * 
+ * Purpose: Abstract class to group all the pixels together. Extend this class to create different kinds of pixels
+ */
 abstract public class Pixel {
 
     //Values that will be used to color the pixel
@@ -18,9 +24,19 @@ abstract public class Pixel {
     protected String name;
     protected int ID_name;
 
-    //I may not use this.
+    //Position where the pixel is
     protected Vector2d position;
 
+    /**
+     * Abstract Constructor. Create a pixel object
+     * 
+     * @param red       Red value ranging from 0-255
+     * @param green     Green value ranging from 0-255
+     * @param blue      Blue value ranging from 0-255
+     * @param name      Single String descriter name
+     * @param ID        Unique int for a specific pixel
+     * @param position  Vector2D
+     */
     public Pixel(int red, int green, int blue, String name, int ID, Vector2d position){
         this.red = (float)red/256.0f;
         this.green = (float)green/256.0f;
@@ -33,7 +49,9 @@ abstract public class Pixel {
         this.position = new Vector2d(position.x,position.y);
     }
 
-    //I may not use this
+    //------------------------------------------------------------------------------------------
+    //Getter functions
+    //------------------------------------------------------------------------------------------
     public Vector2d get_position(){
         return new Vector2d(this.position.x,this.position.y);
     }
@@ -62,6 +80,9 @@ abstract public class Pixel {
         return this.blue;
     }
 
+    //------------------------------------------------------------------------------------------
+    //Abstract functions
+    //------------------------------------------------------------------------------------------
     public abstract void draw();
 
     public abstract void update();
