@@ -47,6 +47,7 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
+import project_1.SandboxEngine.Scene.SceneManager;
 import project_1.SandboxEngine.Utilities.ShapeMaker;
 
 /**
@@ -150,6 +151,7 @@ public class Window {
         //---------------------------------------------------------------------------------------
         w = new int[1];
         h = new int[1];
+        
     }
     
     public void loop(){
@@ -159,16 +161,22 @@ public class Window {
             glfwPollEvents();
             MouseListener.testMouseFunctions();
             KeyListener.testSpaceKeyFunction();
+            
 
-            set_up_screen_coords(false);
+            set_up_screen_coords(true);
 
             glClearColor(1.0f,0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            SceneManager.update();
+            SceneManager.draw();
 
             double x_value = MouseListener.mouse_loc_in_screen().x*SQUARE_SIZE;
             double y_value = MouseListener.mouse_loc_in_screen().y*SQUARE_SIZE;
             glColor3f(0.0f, 1.0f, 0.0f);
             ShapeMaker.fill_square(x_value, y_value, SQUARE_SIZE);
+
+
 
             glfwSwapBuffers(this.glfwWindow);
         }
@@ -181,6 +189,9 @@ public class Window {
         glLoadIdentity();
         glViewport(0, 0, w[0], h[0]);
         glOrtho(0, w[0], h[0], 0, -1.0, 1.0);
+
+        SceneManager.set_width(w[0]);
+        SceneManager.set_height(h[0]);
 
         if(display){
             System.out.println("Width is: " + w[0]);

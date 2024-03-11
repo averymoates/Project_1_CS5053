@@ -59,4 +59,8 @@ abstract public class Pixel {
     public float get_b(){
         return this.blue;
     }
+
+    public abstract void draw();
+
+    public abstract void update();
 }
