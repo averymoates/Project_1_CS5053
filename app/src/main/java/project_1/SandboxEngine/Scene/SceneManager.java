@@ -18,6 +18,11 @@ import project_1.SandboxEngine.Pixel.Sand_pixel;
  * Date:   3/11/2024
  * 
  * Purpose: Class to hold all the user modified values and to draw the pixels onto the screen
+ * 
+ * Notes:
+ * 
+ * Screen coordinates is the actual pixel values of the screen. Default is 1920X1080. The mouse/cursor uses screen coordinates.
+ * Scene coordinates is scaled down from the screen coordinate by `SQUARE_SIZE`. Pixels positions uses scene coordinates.
  */
 public class SceneManager {
 
@@ -26,13 +31,14 @@ public class SceneManager {
     //Change this value to change the size of all the pixels
     final private static double SQUARE_SIZE = 10;
 
-    //This will hold all the pixels that a person draws to the screen
+    //This will hold all the pixels that a person draws to the scene
     private ArrayList<Pixel> pixels = null;
 
     //This will keep track of the size of the window at all times
     private int width;
     private int height;
 
+    //Value that keeps track of what the user wants to draw to the scene
     private int pixel_selector;
 
     private SceneManager(){
@@ -49,6 +55,9 @@ public class SceneManager {
         return SceneManager.instance;
     }
 
+    /**
+     * Function to handle all the updates that needs to happen every frame
+     */
     public static void update(){
         SceneManager.pull_events();
 
@@ -57,6 +66,9 @@ public class SceneManager {
         }
     }
 
+    /**
+     * Function to draw everything onto the scene
+     */
     public static void draw(){
         for(Pixel pixel: SceneManager.get().pixels){
             pixel.draw();
@@ -91,10 +103,22 @@ public class SceneManager {
     //------------------------------------------------------------------------------------------
     //Pixel array functions
     //------------------------------------------------------------------------------------------
+    
+    /**
+     * Function to add any pixel into the static pixel array
+     * 
+     * @param pixel The pixel that you want to add to the static pixel array
+     */
     public static void add_pixel(Pixel pixel){
         SceneManager.get().pixels.add(pixel);
     }
 
+    /**
+     * Function to check if a certain position is free,
+     * 
+     * @param position
+     * @return
+     */
     private static boolean is_position_empty(Vector2d position){
         for(Pixel pixel: SceneManager.get().pixels){
             if((pixel.get_position().x == position.x) && (pixel.get_position().y == position.y)){
@@ -104,6 +128,12 @@ public class SceneManager {
         return true;
     }
 
+    /**
+     * Function to remove a specific pixel from the pixel array
+     * 
+     * @param pixel The pixel that need to be removed
+     * @return      True if the operation was successful
+     */
     public static boolean remove_pixel(Pixel pixel){
         if(SceneManager.get().pixels.size() == 0){
             System.out.println("Pixel array empty");
@@ -115,6 +145,12 @@ public class SceneManager {
         }
     }
 
+    /**
+     * Function to handle which pixel is drawn to the scene
+     * 
+     * @param position  The position in scene coordinates
+     * @return          
+     */
     private static Pixel create_selected_pixel(Vector2d position){
         switch (SceneManager.get().pixel_selector) {
             case 0:

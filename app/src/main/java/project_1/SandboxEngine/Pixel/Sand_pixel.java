@@ -11,12 +11,12 @@ import project_1.SandboxEngine.Utilities.ShapeMaker;
  * Author: Avery Moates
  * Date:   3/11/2024
  * 
- * Purpose: The sand pixel. 
+ * Purpose: The sand pixel. Falls down.
  */
 public class Sand_pixel extends Pixel{
 
     private int time_step;
-    private static int fall_rate = 5;
+    private static int fall_rate = 10;
 
     public Sand_pixel(Vector2d position){
         super(217, 180, 78, "Sand", 1, position);

@@ -17,14 +17,14 @@ abstract public class Pixel {
     protected float green;
     protected float blue;
 
-    //Size of each of the squares. This need to stay the for all pixels
+    //Size of each of the squares
     protected double square_size = SceneManager.get_square_size();
 
     //A way to identify each of the different pixels
     protected String name;
     protected int ID_name;
 
-    //Position where the pixel is
+    //Position where the pixel is in scene coordinates
     protected Vector2d position;
 
     /**
@@ -83,7 +83,13 @@ abstract public class Pixel {
     //------------------------------------------------------------------------------------------
     //Abstract functions
     //------------------------------------------------------------------------------------------
+    /**
+     * Function to draw this pixel onto the scene
+     */
     public abstract void draw();
 
+    /**
+     * Function to hold all the logic and/or animations for a pixel
+     */
     public abstract void update();
 }

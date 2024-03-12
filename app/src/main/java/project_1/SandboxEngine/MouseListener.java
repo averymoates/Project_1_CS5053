@@ -98,7 +98,9 @@ public class MouseListener {
         MouseListener.get().scrollY = yOffset;
     }
 
+    //------------------------------------------------------------------------------------------
     //Getter functions
+    //------------------------------------------------------------------------------------------
     public static double getX(){
         return MouseListener.get().xPos;
     }
@@ -115,7 +117,6 @@ public class MouseListener {
         return MouseListener.get().lastY - MouseListener.get().yPos;
     }
 
-    //Probably will never use this
     public static double getScrollX(){
         return MouseListener.get().scrollX;
     }
@@ -128,6 +129,12 @@ public class MouseListener {
         return MouseListener.get().isDragging;
     }
 
+    /**
+     * Function to check which button is pressed on the mouse/cursor
+     * 
+     * @param button    Button value
+     * @return          True if that specific button is pressed
+     */
     public static boolean isMouseButtonDown(int button){
         if(button < MouseListener.get().mouseButtonPressed.length){
             return MouseListener.get().mouseButtonPressed[button];
@@ -139,7 +146,7 @@ public class MouseListener {
     }
 
     /**
-     * Function to return a Vector that can be used to draw a pixel on the screen
+     * Function that converts the mouse/cursor screen coordinates into scene coordinates
      * 
      * @return  Vector2D
      */
