@@ -18,6 +18,11 @@ import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
  * Date:   3/11/2024
  * 
  * Purpose: Class to hold all the user modified values and to draw the pixels onto the screen
+ * 
+ * Notes:
+ * 
+ * Screen coordinates is the actual pixel values of the screen. Default is 1920X1080. The mouse/cursor uses screen coordinates.
+ * Scene coordinates is scaled down from the screen coordinate by `SQUARE_SIZE`. Pixels positions uses scene coordinates.
  */
 public class SceneManager {
 
@@ -30,6 +35,7 @@ public class SceneManager {
     private int width;
     private int height;
 
+    //Value that keeps track of what the user wants to draw to the scene
     private int pixel_selector;
 
     private SceneManager(){
@@ -55,6 +61,9 @@ public class SceneManager {
         CellularAutomata.get().update();
     }
 
+    /**
+     * Function to draw everything onto the scene
+     */
     public void draw(){
         CellularAutomata.get().draw();
     }

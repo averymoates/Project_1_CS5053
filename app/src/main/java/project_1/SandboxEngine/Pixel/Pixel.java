@@ -20,7 +20,7 @@ abstract public class Pixel {
     protected float green;
     protected float blue;
 
-    //Size of each of the squares. This need to stay the for all pixels
+    //Size of each of the squares
     protected double square_size = SceneManager.get_square_size();
 
     //A way to identify each of the different pixels

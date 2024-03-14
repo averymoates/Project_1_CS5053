@@ -163,21 +163,16 @@ public class Window {
             // MouseListener.testMouseFunctions();
             // KeyListener.testSpaceKeyFunction();
             
-
             set_up_screen_coords(false);
 
+            //Set the background to a gray color
             glClearColor(173.0f/256.0f,172.0f/256.0f, 166.0f/256.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             SceneManager.get().update();
             SceneManager.get().draw();
 
-            double x_value = MouseListener.mouse_loc_in_screen().x*SceneManager.get_square_size();
-            double y_value = MouseListener.mouse_loc_in_screen().y*SceneManager.get_square_size();
-            glColor3f(105.0f/256.0f, 103.0f/256.0f, 99.0f/256.0f);
-            ShapeMaker.fill_square(x_value, y_value, SceneManager.get_square_size());
-
-
+            draw_square_cursor();
 
             glfwSwapBuffers(this.glfwWindow);
         }
@@ -198,5 +193,14 @@ public class Window {
             System.out.println("Width is: " + w[0]);
             System.out.println("Height is: " + h[0] + "\n");
         }
+    }
+
+    private void draw_square_cursor(){
+        //Draw a square to help the user know where they are placing a pixel
+        double x_value = MouseListener.mouse_loc_in_screen().x*SceneManager.get_square_size();
+        double y_value = MouseListener.mouse_loc_in_screen().y*SceneManager.get_square_size();
+        glColor3f(105.0f/256.0f, 103.0f/256.0f, 99.0f/256.0f);
+        ShapeMaker.fill_square(x_value, y_value, SceneManager.get_square_size());
+
     }
 }
