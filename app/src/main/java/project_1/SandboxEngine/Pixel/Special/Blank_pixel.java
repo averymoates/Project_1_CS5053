@@ -1,10 +1,7 @@
 package project_1.SandboxEngine.Pixel.Special;
 
-import static org.lwjgl.opengl.GL11.glColor3f;
 import org.joml.Vector2d;
-
-import project_1.SandboxEngine.Pixel.Pixel;
-import project_1.SandboxEngine.Utilities.ShapeMaker;
+import project_1.SandboxEngine.Pixel.PixelType;
 
 /**
  * Author: Avery Moates
@@ -15,7 +12,7 @@ import project_1.SandboxEngine.Utilities.ShapeMaker;
 public class Blank_pixel extends Special{
 
     public Blank_pixel(Vector2d position){
-        super(0,0,0,"Blank",0,position);
+        super(PixelType.BLANK,0,position);
         this.needs_updating = false;
     }
 

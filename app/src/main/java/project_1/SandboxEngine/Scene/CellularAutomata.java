@@ -1,7 +1,5 @@
 package project_1.SandboxEngine.Scene;
 
-import java.util.*;
-
 import org.joml.Vector2d;
 
 import project_1.SandboxEngine.Pixel.Pixel;

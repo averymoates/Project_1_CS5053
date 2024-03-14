@@ -2,13 +2,14 @@ package project_1.SandboxEngine.Pixel.Element.Solid;
 
 import org.joml.Vector2d;
 
+import project_1.SandboxEngine.Pixel.PixelType;
 import project_1.SandboxEngine.Scene.CellularAutomata;
 
 public class Moveable_Solid extends Solid {
     private double fall_rate;
 
-    public Moveable_Solid(int r, int g, int b, String name, int id, double weight, double fall_rate, Vector2d position) {
-        super(r, g, b, name, id, weight, position);
+    public Moveable_Solid(PixelType name, int id, double weight, double fall_rate, Vector2d position) {
+        super(name, id, weight, position);
         this.fall_rate = fall_rate;
         this.needs_updating = true;
     }

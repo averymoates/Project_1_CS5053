@@ -38,9 +38,15 @@ public class SceneManager {
     //Value that keeps track of what the user wants to draw to the scene
     private int pixel_selector;
 
+    private long start_time;
+    private long end_time;
+    private int frame_counter;
+
     private SceneManager(){
         this.pixel_selector = 0;
-
+        start_time = System.nanoTime();
+        end_time = 0;
+        frame_counter = 0;
     }
 
     public static SceneManager get(){
@@ -56,6 +62,7 @@ public class SceneManager {
     }
 
     public void update(){
+        fps();
         SceneManager.get().pull_events();
 
         CellularAutomata.get().update();
@@ -133,6 +140,20 @@ public class SceneManager {
     public static double get_square_size(){
         SceneManager.get();
         return SceneManager.SQUARE_SIZE;
+    }
+
+    //------------------------------------------------------------------------------------------
+    //Other functions
+    //------------------------------------------------------------------------------------------
+    private void fps(){
+        ++frame_counter;
+        end_time = System.nanoTime();
+        if((end_time-start_time) >= 1000000000){
+            System.out.println("FPS: " + frame_counter);
+            start_time = System.nanoTime();
+            end_time = 0;
+            frame_counter = 0;
+        }
     }
     
 }

@@ -2,6 +2,8 @@ package project_1.SandboxEngine.Pixel.Element.Solid;
 
 import org.joml.Vector2d;
 
+import project_1.SandboxEngine.Pixel.PixelType;
+
 /**
  * Author: Avery Moates
  * Date:   3/11/2024
@@ -11,7 +13,7 @@ import org.joml.Vector2d;
 public class Sand_pixel extends Moveable_Solid{
 
     public Sand_pixel(Vector2d position){
-        super(217, 180, 78, "Sand", 1, 2, 5, position);
+        super(PixelType.SAND, 1, 2, 5, position);
         this.set_random_sand_color();
         this.time_step = 0;
     }
@@ -44,6 +46,9 @@ public class Sand_pixel extends Moveable_Solid{
             return;
         }
         else{
+            this.red = 217.0f/256.0f;
+            this.green = 180.0f/256.0f;
+            this.blue = 78.0f/256.0f;
             return;
         }
     }
