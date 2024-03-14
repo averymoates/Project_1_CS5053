@@ -1,8 +1,11 @@
 package project_1.SandboxEngine.Pixel;
 
+import static org.lwjgl.opengl.GL11.glColor3f;
+
 import org.joml.Vector2d;
 
 import project_1.SandboxEngine.Scene.SceneManager;
+import project_1.SandboxEngine.Utilities.ShapeMaker;
 
 /**
  * Author: Avery Moates
@@ -24,8 +27,15 @@ abstract public class Pixel {
     protected String name;
     protected int ID_name;
 
-    //Position where the pixel is
+    //Keep track where this pixel is located
     protected Vector2d position;
+
+    //This will be used to check if this pixel needs to be removed from the array
+    protected boolean is_alive;
+
+    //Values to make sure a pixel does not get updated multiple times during a singal frame update call
+    protected boolean updated;
+    protected boolean needs_updating;
 
     /**
      * Abstract Constructor. Create a pixel object
@@ -44,18 +54,15 @@ abstract public class Pixel {
 
         this.name = name;
         this.ID_name = ID;
-
-        //I may not use this
-        this.position = new Vector2d(position.x,position.y);
+        this.set_position(position);
+        this.is_alive = true;
+        this.updated = false;
+        this.needs_updating = false;
     }
 
     //------------------------------------------------------------------------------------------
     //Getter functions
     //------------------------------------------------------------------------------------------
-    public Vector2d get_position(){
-        return new Vector2d(this.position.x,this.position.y);
-    }
-
     public double get_sqaure_size(){
         return this.square_size;
     }
@@ -80,10 +87,39 @@ abstract public class Pixel {
         return this.blue;
     }
 
-    //------------------------------------------------------------------------------------------
-    //Abstract functions
-    //------------------------------------------------------------------------------------------
-    public abstract void draw();
+    public Vector2d get_position(){
+        return this.position;
+    }
 
-    public abstract void update();
+    public boolean is_updated(){
+        return this.updated;
+    }
+
+    public boolean needs_updating(){
+        return this.needs_updating;
+    }
+
+    //------------------------------------------------------------------------------------------
+    //Setter functions
+    //------------------------------------------------------------------------------------------
+    public void set_position(Vector2d position){
+        this.position = new Vector2d(position.x,position.y);
+    }
+
+    //------------------------------------------------------------------------------------------
+    //Other functions
+    //------------------------------------------------------------------------------------------
+    public void draw(){
+        glColor3f(this.get_r(), this.get_g(), this.get_b());
+        ShapeMaker.fill_square(this.position.x*this.get_sqaure_size(), this.position.y*this.get_sqaure_size(), this.get_sqaure_size());
+        if(this.needs_updating){
+            this.updated = false;
+        }
+    }
+
+    public void update(){
+        if(this.needs_updating){
+            this.updated = true;
+        }
+    }
 }

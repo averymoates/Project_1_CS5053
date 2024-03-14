@@ -9,9 +9,9 @@ import org.joml.Vector2d;
 
 import project_1.SandboxEngine.KeyListener;
 import project_1.SandboxEngine.MouseListener;
-import project_1.SandboxEngine.Pixel.Blank_pixel;
 import project_1.SandboxEngine.Pixel.Pixel;
-import project_1.SandboxEngine.Pixel.Sand_pixel;
+import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
+import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
 
 /**
  * Author: Avery Moates
@@ -26,9 +26,6 @@ public class SceneManager {
     //Change this value to change the size of all the pixels
     final private static double SQUARE_SIZE = 10;
 
-    //This will hold all the pixels that a person draws to the screen
-    private ArrayList<Pixel> pixels = null;
-
     //This will keep track of the size of the window at all times
     private int width;
     private int height;
@@ -36,8 +33,7 @@ public class SceneManager {
     private int pixel_selector;
 
     private SceneManager(){
-        pixels = new ArrayList<Pixel>();
-        pixel_selector = 0;
+        this.pixel_selector = 0;
 
     }
 
@@ -49,24 +45,24 @@ public class SceneManager {
         return SceneManager.instance;
     }
 
-    public static void update(){
-        SceneManager.pull_events();
-
-        for(Pixel pixel: SceneManager.get().pixels){
-            pixel.update();
-        }
+    public void init(){
+        CellularAutomata.get().init();
     }
 
-    public static void draw(){
-        for(Pixel pixel: SceneManager.get().pixels){
-            pixel.draw();
-        }
+    public void update(){
+        SceneManager.get().pull_events();
+
+        CellularAutomata.get().update();
+    }
+
+    public void draw(){
+        CellularAutomata.get().draw();
     }
     
     /**
      * Function to update any values that depend on user inputs
      */
-    private static void pull_events(){
+    private void pull_events(){
         //Check which pixel is selected. This will need to be changed to a menu like selector
         if(KeyListener.isKeyPressed(GLFW_KEY_B)){
             SceneManager.get().pixel_selector = 0;
@@ -78,8 +74,8 @@ public class SceneManager {
         //Add the selected pixel so that it can be drawn later
         if(MouseListener.isMouseButtonDown(0)){
             Vector2d position = MouseListener.mouse_loc_in_screen();
-            if(SceneManager.is_position_empty(position)){
-                SceneManager.add_pixel(SceneManager.create_selected_pixel(position));
+            if(CellularAutomata.get().is_position_empty(position)){
+                CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position);
             }
         }
     }
@@ -89,33 +85,9 @@ public class SceneManager {
     //------------------------------------------------------------------------------------------
 
     //------------------------------------------------------------------------------------------
-    //Pixel array functions
+    //Pixel functions
     //------------------------------------------------------------------------------------------
-    public static void add_pixel(Pixel pixel){
-        SceneManager.get().pixels.add(pixel);
-    }
-
-    private static boolean is_position_empty(Vector2d position){
-        for(Pixel pixel: SceneManager.get().pixels){
-            if((pixel.get_position().x == position.x) && (pixel.get_position().y == position.y)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean remove_pixel(Pixel pixel){
-        if(SceneManager.get().pixels.size() == 0){
-            System.out.println("Pixel array empty");
-            return false;
-        }
-        else{
-            SceneManager.get().pixels.remove(pixel);
-            return true;
-        }
-    }
-
-    private static Pixel create_selected_pixel(Vector2d position){
+    private Pixel create_selected_pixel(Vector2d position){
         switch (SceneManager.get().pixel_selector) {
             case 0:
                 return new Blank_pixel(position);
@@ -152,10 +124,6 @@ public class SceneManager {
     public static double get_square_size(){
         SceneManager.get();
         return SceneManager.SQUARE_SIZE;
-    }
-
-    public static ArrayList<Pixel> get_pixels(){
-        return SceneManager.get().pixels;
     }
     
 }

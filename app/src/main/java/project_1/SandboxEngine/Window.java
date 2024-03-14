@@ -149,6 +149,9 @@ public class Window {
         //---------------------------------------------------------------------------------------
         w = new int[1];
         h = new int[1];
+        SceneManager.set_width(this.width);
+        SceneManager.set_height(this.height);
+        SceneManager.get().init();
         
     }
     
@@ -166,8 +169,8 @@ public class Window {
             glClearColor(173.0f/256.0f,172.0f/256.0f, 166.0f/256.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            SceneManager.update();
-            SceneManager.draw();
+            SceneManager.get().update();
+            SceneManager.get().draw();
 
             double x_value = MouseListener.mouse_loc_in_screen().x*SceneManager.get_square_size();
             double y_value = MouseListener.mouse_loc_in_screen().y*SceneManager.get_square_size();
