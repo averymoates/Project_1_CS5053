@@ -14,24 +14,29 @@ run these commands in the terminal word for word. This are the linux commands
 
 # Create new Pixels
 
-Create a new pixel by implementing the `Pixel` Class. Doing this will add abstract functions `update()` and `draw()`.
+Depending on the pixel you want to implement, there are certain categories that are already created that you can extend from. These categories are:
+- Element
+    - Solid
+        - Movable solid
+    - Liquid
+    - Gas
+- Special
 
-You need to name your new pixel and also give this new pixel a positive unique int value that is not being used by the other created pixels.
+After the category has been picked, just extend the base class.
 
-`update()` will be called every frame so if your next pixel requires animation or has movement, then put the logic in this function.
+Things that all pixels need to have:
+- Unique String name
+- Unique int ID greater than 0
+- RGB color values
+- Position (x,y)
 
-`draw()` is the function that will be called to draw the pixel onto the scene.
-
-After the new pixel class is finished, you will need to add your pixel to the pixel selector. This can be done in the `SceneManager.java` class.
-
-Look for the function called `create_selected_pixel(Vector2d position)`. In this function, follow the same format to add your pixel to the pixel selector.
+Things that you should change:
+- `update()`
 
 # Notes
 
-The `SceneManager.java` class is a public static class. So, if your pixel needs to modify the pixels array that is stored in the `SceneManage.java` you should be able to do so.
+Screen coordinates is the actual pixel values of the screen. Default is 1920X1080. The mouse/cursor uses screen coordinates. In the code, x refers to the width and goes left to right from 0-1920. Y refers to the height and goes from top to bottom from 0-1080.
 
-You do this by doing this, `SceneManager.get_pixels()`. You will have to be careful doing this. The pixel array has no built in protection, so you can anything that you can to a normal `ArrayList`.
+Scene coordinates is scaled down from the screen coordinate by `SQUARE_SIZE`. Pixel positions uses scene coordinates. 
 
-Screen coordinates is the actual pixel values of the screen. Default is 1920X1080. The mouse/cursor uses screen coordinates
-
-Scene coordinates is scaled down from the screen coordinate by `SQUARE_SIZE`. Pixel positions uses scene coordinates
+The drawing space is set to 190X100
