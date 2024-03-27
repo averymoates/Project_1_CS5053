@@ -90,8 +90,10 @@ public class SceneManager {
         //Add the selected pixel so that it can be drawn later
         if(MouseListener.isMouseButtonDown(0)){
             Vector2d position = MouseListener.mouse_loc_in_screen();
-            if(CellularAutomata.get().is_position_empty(position)){
-                CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position);
+            if(CellularAutomata.get().pos_allowed(position)){
+                if(CellularAutomata.get().pos_empty(position,false)){
+                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position,false);
+                }
             }
         }
     }

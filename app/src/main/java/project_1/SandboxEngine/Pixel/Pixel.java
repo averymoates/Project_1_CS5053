@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.glLineWidth;
 
 import org.joml.Vector2d;
 
+import project_1.SandboxEngine.Scene.CellularAutomata;
 import project_1.SandboxEngine.Scene.SceneManager;
 import project_1.SandboxEngine.Utilities.ColorPicker;
 import project_1.SandboxEngine.Utilities.ShapeMaker;
@@ -35,10 +36,6 @@ abstract public class Pixel {
     //This will be used to check if this pixel needs to be removed from the array
     protected boolean is_alive;
 
-    //Values to make sure a pixel does not get updated multiple times during a singal frame update call
-    protected boolean updated;
-    protected boolean needs_updating;
-
     /**
      * Abstract Constructor. Create a pixel object
      * 
@@ -54,8 +51,6 @@ abstract public class Pixel {
         this.ID_name = ID;
         this.set_position(position);
         this.is_alive = true;
-        this.updated = false;
-        this.needs_updating = false;
     }
 
     //------------------------------------------------------------------------------------------
@@ -89,14 +84,6 @@ abstract public class Pixel {
         return this.position;
     }
 
-    public boolean is_updated(){
-        return this.updated;
-    }
-
-    public boolean needs_updating(){
-        return this.needs_updating;
-    }
-
     //------------------------------------------------------------------------------------------
     //Setter functions
     //------------------------------------------------------------------------------------------
@@ -116,17 +103,9 @@ abstract public class Pixel {
     public void draw(){
         glColor3f(this.get_r(), this.get_g(), this.get_b());
         ShapeMaker.fill_square(this.position.x*this.get_sqaure_size(), this.position.y*this.get_sqaure_size(), this.get_sqaure_size());
-        if(this.needs_updating){
-            glLineWidth(0.5f);
-            ColorPicker.set_debug_color();
-            ShapeMaker.edge_square(this.position.x*this.get_sqaure_size(), this.position.y*this.get_sqaure_size(), this.get_sqaure_size());
-            this.updated = false;
-        }
     }
 
     public void update(){
-        if(this.needs_updating){
-            this.updated = true;
-        }
+        CellularAutomata.get().add_pixel(this, this.position, true);
     }
 }

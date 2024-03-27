@@ -13,7 +13,6 @@ public class Blank_pixel extends Special{
 
     public Blank_pixel(Vector2d position){
         super(PixelType.BLANK,0,position);
-        this.needs_updating = false;
     }
 
     

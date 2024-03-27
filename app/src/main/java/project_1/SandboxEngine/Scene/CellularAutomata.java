@@ -8,7 +8,11 @@ public class CellularAutomata {
 
     private static CellularAutomata instance = null;
 
-    private Pixel[][] pixel_array;
+    //This will hold the current state of the grid. This should only be changed by the draw function
+    private Pixel[][] current_grid;
+
+    //Always make changes to this grid.
+    private Pixel[][] buffer_grid;
 
     //These values describe the total draw space.
     private int total_width;
@@ -33,57 +37,61 @@ public class CellularAutomata {
         CellularAutomata.get().total_width = (int)(SceneManager.get_width()/CellularAutomata.get().SQUARE_SIZE) - 2;
         CellularAutomata.get().total_height = (int)(SceneManager.get_height()/CellularAutomata.get().SQUARE_SIZE) - 8;
         CellularAutomata.get().total_pixels = CellularAutomata.get().total_height*CellularAutomata.get().total_width;
-        CellularAutomata.get().pixel_array = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
-        CellularAutomata.get().empty_array();
+        CellularAutomata.get().current_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
+        CellularAutomata.get().buffer_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
+        CellularAutomata.get().empty_curr_grid();
+        CellularAutomata.get().empty_buff_grid();
 
         System.out.println("Cellular Automata Size: "+CellularAutomata.get().total_width+"X"+CellularAutomata.get().total_height);
     }
 
     public void update(){
+        // System.out.println("Cellular Automata Update call");
+        CellularAutomata.get().empty_buff_grid();
         for(int col=0; col<CellularAutomata.get().total_width; ++col){
             for(int row=0; row<CellularAutomata.get().total_height; ++row){
-                if(CellularAutomata.get().pixel_array[col][row] != null){
-                    CellularAutomata.get().pixel_array[col][row].update();
+                if(CellularAutomata.get().current_grid[col][row] != null){
+                    CellularAutomata.get().current_grid[col][row].update();
                 }
             }
         }
-
     }
 
     public void draw(){
+        // System.out.println("Cellular Automata Draw call");
         for(int col=0; col<CellularAutomata.get().total_width; ++col){
             for(int row=0; row<CellularAutomata.get().total_height; ++row){
-                if(CellularAutomata.get().pixel_array[col][row] != null){
-                    CellularAutomata.get().pixel_array[col][row].draw();
+                if(CellularAutomata.get().buffer_grid[col][row] != null){
+                    CellularAutomata.get().buffer_grid[col][row].draw();
                 }
-                
+                CellularAutomata.get().current_grid[col][row] = buffer_grid[col][row];
             }
         }
-
     }
 
-    public void empty_array(){
-        //Set everything in the 2D array to null
-        CellularAutomata.get().pixel_array = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
+    public void empty_curr_grid(){
+        CellularAutomata.get().current_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
+    }
 
+    public void empty_buff_grid(){
+        CellularAutomata.get().buffer_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
     }
 
     //------------------------------------------------------------------------------------------
     //Array functions
     //------------------------------------------------------------------------------------------
 
-    public void add_pixel(Pixel pixel, Vector2d position){
-        if((position.x >= CellularAutomata.get().get_width()) || (position.x <= 0)){
-            return;
+    public void add_pixel(Pixel pixel, Vector2d position, boolean buffer_array){
+        if(buffer_array){
+            CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y] = pixel;
         }
-        if((position.y >= CellularAutomata.get().get_height()) || (position.y <= 0)){
-            return;
+        else{
+            CellularAutomata.get().current_grid[(int)position.x][(int)position.y] = pixel;
         }
-        CellularAutomata.get().pixel_array[(int)position.x][(int)position.y] = pixel;
     }
 
     public void remove_pixel(Vector2d position){
-        CellularAutomata.get().pixel_array[(int)position.x][(int)position.y] = null;
+        CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y] = null;
     }
 
     /**
@@ -92,59 +100,29 @@ public class CellularAutomata {
      * @param position
      * @return
      */
-    public boolean is_position_empty(Vector2d position){
-        if((position.x >= CellularAutomata.get().get_width()) || (position.x <= 0)){
+    public boolean pos_empty(Vector2d position, boolean buffer_array){
+        if(buffer_array){
+            if(CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y] == null){
+                return true;
+            }
             return false;
-        }
-        if((position.y >= CellularAutomata.get().get_height()) || (position.y <= 0)){
-            return false;
-        }
-        if(CellularAutomata.get().pixel_array[(int)position.x][(int)position.y] == null){
-            return true;
         }
         else{
+            if(CellularAutomata.get().current_grid[(int)position.x][(int)position.y] == null){
+                return true;
+            }
             return false;
         }
     }
 
-    /**
-     * Function to check if a pixel at a certain position has been updated.
-     * The reason for this function is so that a pixel does not get updated 
-     * multiple times per frame update call
-     * 
-     * @param position
-     * @return
-     */
-    public boolean has_pixel_updated(Vector2d position){
-        if(CellularAutomata.get().is_position_empty(position)){
+    public boolean pos_allowed(Vector2d position){
+        if(position.x<0 || position.x>=CellularAutomata.get().total_width){
             return false;
         }
-
-        return CellularAutomata.get().pixel_array[(int)position.x][(int)position.y].is_updated();
-    }
-
-    /**
-     * Function to swap pixel A with pixel B. This also updates the position values for each pixels
-     * 
-     * @param positionA Pixel A Location
-     * @param positionB Pixel B Location
-     */
-    public void swap_pixel_positions(Vector2d positionA, Vector2d positionB){
-        //Keep a temp B
-        Pixel temp = CellularAutomata.get().pixel_array[(int)positionB.x][(int)positionB.y];
-
-        //Move A into position B
-        CellularAutomata.get().pixel_array[(int)positionB.x][(int)positionB.y] = CellularAutomata.get().pixel_array[(int)positionA.x][(int)positionA.y];
-        if(CellularAutomata.get().pixel_array[(int)positionB.x][(int)positionB.y] != null){
-            CellularAutomata.get().pixel_array[(int)positionB.x][(int)positionB.y].set_position(positionB);
+        if(position.y<0 || position.y>=CellularAutomata.get().total_height){
+            return false;
         }
-        
-        //Move temp B into position A
-        CellularAutomata.get().pixel_array[(int)positionA.x][(int)positionA.y] = temp;
-        if(CellularAutomata.get().pixel_array[(int)positionA.x][(int)positionA.y] != null){
-            CellularAutomata.get().pixel_array[(int)positionA.x][(int)positionA.y].set_position(positionA);
-        }
-        
+        return true;
     }
 
     //------------------------------------------------------------------------------------------
@@ -162,6 +140,16 @@ public class CellularAutomata {
     public int get_total_pixels(){
         return CellularAutomata.get().total_pixels;
     }
+
+    public Pixel get_pixel(Vector2d position, boolean buffer_array){
+        if(buffer_array){
+            return CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y];
+        }
+        else{
+            return CellularAutomata.get().current_grid[(int)position.x][(int)position.y];
+        }
+    }
+
 
     
     
