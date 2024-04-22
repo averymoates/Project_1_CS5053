@@ -37,6 +37,7 @@ public class SceneManager {
 
     //Value that keeps track of what the user wants to draw to the scene
     private int pixel_selector;
+    private boolean gameOfLifeMode = false;
 
     private long start_time;
     private long end_time;
@@ -87,12 +88,20 @@ public class SceneManager {
             SceneManager.get().pixel_selector = 1;
         }
 
+        else if (KeyListener.isKeyPressed(GLFW_KEY_C)){
+            CellularAutomata.get().convertToGameOfLife();
+            SceneManager.get().pixel_selector = 2;
+        }
+
         //Add the selected pixel so that it can be drawn later
         if(MouseListener.isMouseButtonDown(0)){
             Vector2d position = MouseListener.mouse_loc_in_screen();
-            if(CellularAutomata.get().pos_allowed(position)){
-                if(CellularAutomata.get().pos_empty(position,false)){
-                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position,false);
+            // Automata Selector 
+            if (SceneManager.get().gameOfLifeMode()){
+                CellularAutomata.get().togglePixelState(position);
+            } else {
+                if(CellularAutomata.get().is_position_empty(position)){
+                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position);
                 }
             }
         }
@@ -128,6 +137,10 @@ public class SceneManager {
         SceneManager.get().height = h;
     }
 
+    public void setGameOfLifeMode(boolean mode){
+        this.gameOfLifeMode = mode;
+    }
+
     //------------------------------------------------------------------------------------------
     //getter functions
     //------------------------------------------------------------------------------------------
@@ -142,6 +155,10 @@ public class SceneManager {
     public static double get_square_size(){
         SceneManager.get();
         return SceneManager.SQUARE_SIZE;
+    }
+
+    public boolean getGameOfLifeMode(){
+        return this.gameOfLifeMode;
     }
 
     //------------------------------------------------------------------------------------------

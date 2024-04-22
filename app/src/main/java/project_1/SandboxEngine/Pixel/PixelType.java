@@ -10,5 +10,8 @@ public enum PixelType {
     SAND,
 
     //Special Pixels
-    BLANK;
+    BLANK,
+
+    //Conway Pixels
+    CONWAY;
 }

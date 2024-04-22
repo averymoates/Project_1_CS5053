@@ -125,6 +125,37 @@ public class CellularAutomata {
         return true;
     }
 
+    /* 
+     * 
+     * GAME OF LIFE FUNCTIONS
+     * 
+    */
+
+    public void convertToGameOfLife() {
+        for (int x = 0; x < get_width(); x++) {
+            for (int y = 0; y < get_height(); y++) {
+                Pixel p = current_grid[x][y];
+                if (p != null) {
+                    boolean isAlive = false;
+                    current_grid[x][y] = new Conway(PixelType.CONWAY, p.getId(), new Vector2d(x, y), isAlive);
+                }
+            }
+        }
+    }
+
+    public void togglePixelState(Vector2d position) {
+        int x = (int)position.x;
+        int y = (int)position.y;
+        if (pos_allowed(position) && current_grid[x][y] instanceof Conway) {
+            Conway pixel = (Conway)current_grid[x][y];
+            pixel.setAlive(!pixel.getAlive());
+        }
+    }
+
+    
+
+
+
     //------------------------------------------------------------------------------------------
     //Getter functions
     //------------------------------------------------------------------------------------------
