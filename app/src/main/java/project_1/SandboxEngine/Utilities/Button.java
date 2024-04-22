@@ -1,70 +1,38 @@
-// package project_1.SandboxEngine.Utilities;
-// import static org.lwjgl.opengl.GL11.glBegin;
-// import static org.lwjgl.opengl.GL11.glColor3f;
-// import static org.lwjgl.opengl.GL11.glEnd;
-// import static org.lwjgl.opengl.GL11.glVertex2f;
 
-// import java.awt.Color;
-
-// import org.lwjgl.glfw.GLFW;
-
-// public class Button {
-
-//     private float x, y, width, height;
-//     private String text;
-//     private Color color;
-
-//     public Button(float x, float y, float width, float height, String text, Color color) {
-//         this.x = x;
-//         this.y = y;
-//         this.width = width;
-//         this.height = height;
-//         this.text = text;
-//         this.color = color;
-//     }
-
-//     public boolean clicked(float mouseX, float mouseY) {
-//         return mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height;
-//     }
-
-//     public void render() {
-//         // Assuming a modern OpenGL context (with shaders)
-
-//         // Set the color (change as needed)
-//         glColor3f(0.5f, 0.5f, 0.5f); // A grey color
-
-//         // Draw a rectangle for the button
-//         glBegin(GL_QUADS); // Begin drawing quads
-//             glVertex2f(x, y); // Top-left corner
-//             glVertex2f(x + width, y); // Top-right corner
-//             glVertex2f(x + width, y + height); // Bottom-right corner
-//             glVertex2f(x, y + height); // Bottom-left corner
-//         glEnd(); // End drawing
-//     }
-
-// }
 package project_1.SandboxEngine.Utilities;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL30.*;  // For glGenerateMipmap
+
 import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
 import org.lwjgl.glfw.GLFW;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.stb.STBImage;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+
 public class Button {
 
     private float x, y, width, height;
-    private String text;
+    private String filePath;
     private Color color;
     private int listBase;
+    private int textureId;
 
-    public Button(float x, float y, float width, float height, String text, Color color) {
+    public Button(float x, float y, float width, float height, String filePath, Color color) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.text = text;
+        this.filePath = filePath;
         this.color = color;
+        this.textureId = loadTexture(filePath);
 
         // // Setup for bitmap fonts
         // listBase = glGenLists(256);
@@ -76,7 +44,16 @@ public class Button {
     }
 
     public void render() {
-        // draw red button
+        // outline button
+        glColor3f(0f, 0f, 0f);
+        // glLineWidth(5.0f);
+        glBegin(GL_LINE_LOOP);
+            glVertex2f(x, y);
+            glVertex2f(x + width, y);
+            glVertex2f(x + width, y + height);
+            glVertex2f(x, y + height);
+        glEnd();
+        // fill button
         glColor3f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f);
         glBegin(GL_QUADS);
             glVertex2f(x, y);
@@ -84,6 +61,21 @@ public class Button {
             glVertex2f(x + width, y + height);
             glVertex2f(x, y + height);
         glEnd();
+        // border
+        
+
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, textureId);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(x, y);  // Top-left
+        glTexCoord2f(1, 0); glVertex2f(x + width, y);   // Top-right
+        glTexCoord2f(1, 1); glVertex2f(x + width, y + height);  // Bottom-right
+        glTexCoord2f(0, 1); glVertex2f(x, y + height); // Bottom-left
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+
     
         // // Improved centering calculations
         // int textWidth = text.length() * 8; // Adjust this value based on your actual font width
@@ -92,6 +84,46 @@ public class Button {
     
         // glColor3f(0f, 0f, 0f); // Set text color
         // renderText(text, textX, textY);
+    }
+
+    public static int loadTexture(String filePath) {
+        int width, height;
+        ByteBuffer image;
+    
+        // Load the image
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer comp = stack.mallocInt(1);
+            IntBuffer w = stack.mallocInt(1);
+            IntBuffer h = stack.mallocInt(1);
+    
+            // Load image with STB
+            image = STBImage.stbi_load(filePath, w, h, comp, 4);
+            if (image == null) {
+                throw new RuntimeException("Failed to load a texture file!" + System.lineSeparator() + STBImage.stbi_failure_reason());
+            }
+    
+            width = w.get();
+            height = h.get();
+        }
+    
+        // Generate a texture ID
+        int textureID = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, textureID);
+    
+        // Setup wrap mode and texture filtering options
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+        // Upload the texture data
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    
+        // Free the image memory
+        STBImage.stbi_image_free(image);
+    
+        return textureID;
     }
     
 

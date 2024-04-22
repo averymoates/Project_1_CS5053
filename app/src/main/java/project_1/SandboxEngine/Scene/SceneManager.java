@@ -71,9 +71,9 @@ public class SceneManager {
         CellularAutomata.get().init();
         EdgeDetector.get().init();
 
-        sandButton = new Button(200f, 1100f, 300f, 100f, "BUTTON", Color.ORANGE);
-        waterButton = new Button(600f, 1100f, 300f, 100f, "BUTTON", Color.BLUE);
-        blankButton = new Button(1000f, 1100f, 300f, 100f, "BUTTON", Color.GRAY);
+        sandButton = new Button(200f, 1100f, 300f, 100f, "images\\buttons\\sand.png", Color.ORANGE);
+        waterButton = new Button(600f, 1100f, 300f, 100f, "images\\buttons\\water.png", Color.BLUE);
+        blankButton = new Button(1000f, 1100f, 300f, 100f, "images\\buttons\\solid.png", Color.GRAY);
     }
 
     public void update(){
@@ -149,8 +149,6 @@ public class SceneManager {
                 System.out.println("WATER");
             }
             
-
-
 
             if(CellularAutomata.get().pos_allowed(position)){
                 if(CellularAutomata.get().pos_empty(position,false)){
