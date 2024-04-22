@@ -88,6 +88,7 @@ public class SceneManager {
             SceneManager.get().pixel_selector = 1;
         }
 
+        //Conway game of life setup on C.
         else if (KeyListener.isKeyPressed(GLFW_KEY_C)){
             CellularAutomata.get().convertToGameOfLife();
             SceneManager.get().pixel_selector = 2;

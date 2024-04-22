@@ -125,12 +125,14 @@ public class CellularAutomata {
         return true;
     }
 
-    /* 
-     * 
-     * GAME OF LIFE FUNCTIONS
-     * 
-    */
+    //
+    //Game of Life Functions
+    //
 
+    /*
+     * Converts all of the sand pixels (only enum type implemented currently) to game of life pixels to run the simulation on them.
+     * Activates when the user clicks the letter 'C', can be found in SceneManager.
+     */
     public void convertToGameOfLife() {
         for (int x = 0; x < get_width(); x++) {
             for (int y = 0; y < get_height(); y++) {
@@ -143,6 +145,9 @@ public class CellularAutomata {
         }
     }
 
+    /*
+     * The MouseListener() will call this function depending on where the mouse cursor (SceneManager) is when clicked.
+     */
     public void togglePixelState(Vector2d position) {
         int x = (int)position.x;
         int y = (int)position.y;

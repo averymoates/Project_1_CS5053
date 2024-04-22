@@ -12,6 +12,9 @@ public class Conway extends Special {
         this.isAlive = isAlive;
     }
     
+    /*
+     * Overrides the update method to go through all the pixels and run the Game of Life rules.
+     */
     @Override
     public void update(){
         int aliveNeighbors = countAliveNeighbors();
@@ -22,6 +25,14 @@ public class Conway extends Special {
         }
     }
 
+    /*
+     * Goes through and counts the four othogonal cells of the pixel at (x,y) 
+     * 
+     * | x
+     * |xox
+     * | x
+     * 
+     */
     private int countAliveNeighbors(){
         int count = 0;
         for (int dx = -1; dx <= 1; dx++){
@@ -38,6 +49,10 @@ public class Conway extends Special {
 
     }
 
+    /*
+     * Applies game of lifes rules, you can read more here
+     * https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+     */
     private boolean applyGameofLifeRules(boolean currentState, int aliveNeighbors){
         if (currentState && (aliveNeighbors == 2 || aliveNeighbors == 3)){
             return true;
