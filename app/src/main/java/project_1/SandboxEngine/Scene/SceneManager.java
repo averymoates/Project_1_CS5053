@@ -129,23 +129,38 @@ public class SceneManager {
             EdgeDetector.get().setImage(EdgeDetector.get().getImageIdx()+1);
         }
 
+        /********* MOUSE EVENT HANDLING *********/
         Vector2d position = MouseListener.mouse_loc_in_screen();
-        // System.out.println("MOUSE: "+MouseListener.getX()+" "+MouseListener.getY());
-        //Add the selected pixel so that it can be drawn later
+        // if mouse button 0 (left click) is pressed down
         if(MouseListener.isMouseButtonDown(0)){
+            // if button was clicked and its on a falling edge, do stuff
             if (blankButton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
+                // set falling edge
                 SceneManager.get().fallingEdge = true;
+                // set which pixel type to draw
                 SceneManager.get().pixel_selector = 0;
+                // shade this button and unshade other pixel button types
+                blankButton.selected(true);
+                sandButton.selected(false);
+                waterButton.selected(false);
                 System.out.println("BLACK SOLID SELECTED");
             }
             if (sandButton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
                 SceneManager.get().fallingEdge = true;
                 SceneManager.get().pixel_selector = 1;
+                // shade this button and unshade other pixel button types
+                blankButton.selected(false);
+                sandButton.selected(true);
+                waterButton.selected(false);
                 System.out.println("SAND SELECTED");
             }
             if (waterButton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
                 SceneManager.get().fallingEdge = true;
                 SceneManager.get().pixel_selector = 2;
+                // shade this button and unshade other pixel button types
+                blankButton.selected(false);
+                sandButton.selected(false);
+                waterButton.selected(true);
                 System.out.println("WATER");
             }
             

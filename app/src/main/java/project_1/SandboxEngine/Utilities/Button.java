@@ -24,6 +24,7 @@ public class Button {
     private Color color;
     private int listBase;
     private int textureId;
+    private boolean selected;
 
     public Button(float x, float y, float width, float height, String filePath, Color color) {
         this.x = x;
@@ -33,10 +34,16 @@ public class Button {
         this.filePath = filePath;
         this.color = color;
         this.textureId = loadTexture(filePath);
-
+        this.selected = false;
         // // Setup for bitmap fonts
         // listBase = glGenLists(256);
         // setupText(listBase, x, y);
+    }
+    public boolean isSelected() {
+        return this.selected;
+    }
+    public void selected(boolean selected) {
+        this.selected = selected;
     }
 
     public boolean clicked(float mouseX, float mouseY) {
@@ -53,8 +60,15 @@ public class Button {
             glVertex2f(x + width, y + height);
             glVertex2f(x, y + height);
         glEnd();
-        // fill button
-        glColor3f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f);
+        // fill button (shaded darker if currently selected)
+        if (this.selected) {
+            glColor3f(color.getRed()*0.5f / 255.0f, color.getGreen()*0.5f / 255.0f, color.getBlue()*0.5f / 255.0f);
+        }
+        else {
+            glColor3f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f);
+        }
+
+       
         glBegin(GL_QUADS);
             glVertex2f(x, y);
             glVertex2f(x + width, y);
