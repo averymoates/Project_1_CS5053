@@ -14,6 +14,7 @@ import org.opencv.imgproc.Imgproc;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import java.io.File;
+import java.util.ArrayList;
 
 import org.joml.Vector2d;
 import org.lwjgl.opengl.GL;
@@ -32,8 +33,11 @@ import org.lwjgl.opengl.GL;
 public class EdgeDetector {
     private static EdgeDetector instance = null;
 
-    private String file = "C:\\Users\\james\\OneDrive\\Desktop\\SPRING_2024\\Computer_Graphics\\Project_1_CS5053\\images\\lebron.jpg"; // image file to detect edges of
-    private Mat image; // Matrix 2D grid that reprents the image
+    private String file = "images\\lebron.jpg"; // image file to detect edges of
+    private String[] imageNames;
+    private int idx;
+    // private String fileBase = 
+    // private Mat image; // Matrix 2D grid that reprents the image
     private Mat edgeOutput; // final edge detected grid output
 
     // private Pixel[][] pixel_array;
@@ -53,46 +57,6 @@ public class EdgeDetector {
     public EdgeDetector() {
     }
 
-    public void init() {
-        
-        EdgeDetector.get().total_width = (int)(SceneManager.get_width()/SQUARE_SIZE) - 2;
-        EdgeDetector.get().total_height = (int)(SceneManager.get_height()/SQUARE_SIZE) - 8;
-        EdgeDetector.get().thresh1 = 100;
-        EdgeDetector.get().thresh2 = 200;
-
-        // EdgeDetector.get().pixel_array = new Pixel[total_height][total_width];
-        System.out.println("TOTALWIDTH: "+total_width+" TOTALHEIGHT: "+total_height);
-
-        // Read the image
-        EdgeDetector.get().image = Imgcodecs.imread(file);
-
-
-        EdgeDetector.get().edgeOutput = detectImage(image);
-        System.out.println("OUTPUT ROWS: "+edgeOutput.rows()+" OUTPUT COLS: "+edgeOutput.cols());
-        // Copy edges to Pixel array
-        int sum =0;
-        for (int i = 0; i < EdgeDetector.get().total_height; i++) {
-            for (int j = 0; j < EdgeDetector.get().total_width; j++) {
-                double[] data = EdgeDetector.get().edgeOutput.get(i, j);
-                System.out.print(" "+data[0]);
-                
-                if (data[0] > 0.0) {
-                    ++sum;
-                    CellularAutomata.get().add_pixel(new Blank_pixel(new Vector2d(j, i)), new Vector2d(j, i), true);//new Moveable_Solid(PixelType.BLANK, i+j, 0.0, 1.0, new Vector2d(j, i)); 
-                }
-                // else {
-                //     CellularAutomata.get().pixel_array[i][j] = null;
-                // }
-            }
-            // System.out.println();
-        }
-        System.out.println("COUNT: "+sum+ " OF "+EdgeDetector.get().edgeOutput.rows()*EdgeDetector.get().edgeOutput.cols());
-    }
-
-    // public Pixel[][] getPixels() {
-    //     return pixel_array;
-    // }
-
     public static EdgeDetector get(){
         if(EdgeDetector.instance == null){
             EdgeDetector.instance = new EdgeDetector();
@@ -101,61 +65,78 @@ public class EdgeDetector {
         return EdgeDetector.instance;
     }
 
-    // public void draw(){
-    //     for(int col=0; col<EdgeDetector.get().total_width; ++col){
-    //         for(int row=0; row<EdgeDetector.get().total_height; ++row){
-    //             if(CellularAutomata.get().pixel_array[col][row] != null){
-    //                 CellularAutomata.get().pixel_array[col][row].draw();
-    //             }
-    //         }
-    //     }
+    public void init() {
+        
+        EdgeDetector.get().total_width = (int)(SceneManager.get_width()/SQUARE_SIZE) - 2;
+        EdgeDetector.get().total_height = (int)(SceneManager.get_height()/SQUARE_SIZE) - 8;
+        EdgeDetector.get().thresh1 = 100;
+        EdgeDetector.get().thresh2 = 200;
 
-    // }
-    // public void update(){
-    //     for(int col=0; col<EdgeDetector.get().total_width; ++col){
-    //         for(int row=0; row<EdgeDetector.get().total_height; ++row){
-    //             if(CellularAutomata.get().pixel_array[col][row] != null){
-    //                 CellularAutomata.get().pixel_array[col][row].update();
-    //             }
-    //         }
-    //     }
+        // EdgeDetector.get().pixel_array = new Pixel[total_height][total_width];
+        // System.out.println("TOTALWIDTH: "+total_width+" TOTALHEIGHT: "+total_height);
 
-    // }
+        EdgeDetector.get().imageNames = getFilesInFolder("images");
 
-    // public void add_pixel(Pixel pixel, Vector2d position){
-    //     if((position.x >= CellularAutomata.get().get_width()) || (position.x <= 0)){
-    //         return;
-    //     }
-    //     if((position.y >= CellularAutomata.get().get_height()) || (position.y <= 0)){
-    //         return;
-    //     }
-    //     CellularAutomata.get().pixel_array[(int)position.x][(int)position.y] = pixel;
-    // }
+        System.out.println("FOUND " + EdgeDetector.get().imageNames.length + " IMAGES");
+        EdgeDetector.get().setImage(0);
 
-    // public void remove_pixel(Vector2d position){
-    //     CellularAutomata.get().pixel_array[(int)position.x][(int)position.y] = null;
-    // }
-
-    /**
-     * Retrieves the current image.
-     *
-     * @return The current image.
-     */
-    public Mat getImage() {
-        return image;
     }
 
+
+
     /**
-     * Sets the image to the specified file.
+     * Changes the currently selected image and grid display to specified name.
+     * At the moment, this also clears all blank pixels when switching
      *
-     * @param file The file path of the image.
+     * @imgName The new image to switch to for edge detection.
      */
-    public void setImage(String file) {
-        this.file = file;
-        // Read the image
-        image = Imgcodecs.imread(this.file);
-        // Rotate the image by 90 degrees clockwise
-        // Core.rotate(image, image, Core.ROTATE_90_CLOCKWISE);
+    public boolean setImage(int idx) {
+
+        if(idx >= 0 && idx < EdgeDetector.get().imageNames.length) {
+            EdgeDetector.get().idx = idx;
+            System.out.println("SHOWING IMAGE {images\\"+EdgeDetector.get().imageNames[idx]+"}");
+            // Read the image file
+            Mat image = Imgcodecs.imread("images\\"+EdgeDetector.get().imageNames[idx]);
+            // clear grid for new drawing
+            CellularAutomata.get().empty_curr_grid();
+            // draw pixels for this image
+            addEdgePixels(image);
+            return true;
+        }
+
+        return false;
+    }
+
+    public int getImageIdx() {
+        return EdgeDetector.get().idx;
+    }
+
+
+
+
+    // detects edges on the current image and adds them as pixels to the CellularAutomata grid
+    public void addEdgePixels(Mat image) {
+
+        EdgeDetector.get().edgeOutput = detectImage(image);
+        // System.out.println("OUTPUT ROWS: "+edgeOutput.rows()+" OUTPUT COLS: "+edgeOutput.cols());
+        // Copy edges to Pixel array
+        int sum =0;
+        for (int i = 0; i < EdgeDetector.get().total_height; i++) {
+            for (int j = 0; j < EdgeDetector.get().total_width; j++) {
+                double[] data = EdgeDetector.get().edgeOutput.get(i, j);
+                // System.out.print(" "+data[0]);
+                
+                if (data[0] > 0.0) {
+                    ++sum;
+                    Pixel p = new Blank_pixel(new Vector2d(j, i));
+                    p.set_pixel_color(0,0,0);
+                    CellularAutomata.get().add_pixel(p, new Vector2d(j, i), false);
+                }
+
+            }
+            // System.out.println();
+        }
+        System.out.println("COUNT: "+sum+ " OF "+EdgeDetector.get().edgeOutput.rows()*EdgeDetector.get().edgeOutput.cols());
     }
 
     /**
@@ -166,7 +147,7 @@ public class EdgeDetector {
      */
     public Mat detectImage(Mat img) {
         // Core.rotate(image, image, Core.ROTATE_90_CLOCKWISE);
-        Mat resizedImage = resizeImage(total_width, total_height);
+        Mat resizedImage = resizeImage(img, total_width, total_height);
         edgeOutput = detectEdges(resizedImage, thresh1, thresh2);
 
         // Save the output image for debug purposes
@@ -202,7 +183,7 @@ public class EdgeDetector {
      * @param height The new pixel height of image.
      * @return The resized image.
      */
-    private Mat resizeImage(int width, int height) {
+    private Mat resizeImage(Mat image, int width, int height) {
         Size newSize = new Size(width, height);
         
         Imgproc.resize(image, image, newSize);
@@ -249,4 +230,41 @@ public class EdgeDetector {
     public int getThresh2() {
         return thresh2;
     }
+
+    /**
+     * Returns a string array containing file names for every file in the specified folder.
+     *
+     * @folderPath Folder to read all files of
+     */
+    public static String[] getFilesInFolder(String folderPath) {
+        // Create a File object for the specified folder path.
+        File folder = new File(folderPath);
+
+        // Check if the folder exists and is indeed a directory.
+        if (!folder.exists() || !folder.isDirectory()) {
+            System.out.println("The specified folder does not exist or is not a directory.");
+            return new String[0]; // Return an empty array if the folder doesn't exist.
+        }
+
+        // List all files in the folder.
+        File[] files = folder.listFiles();
+        if (files == null) {
+            System.out.println("No files found or an I/O error occurred.");
+            return new String[0]; // Return an empty array if an I/O error occurs.
+        }
+
+        // Use a List to hold file names because we don't know exactly how many files there are.
+        ArrayList<String> fileNames = new ArrayList<>();
+
+        // Iterate over all files in the directory.
+        for (File file : files) {
+            if (file.isFile()) { // Check if the file object is indeed a file and not a subdirectory.
+                fileNames.add(file.getName()); // Add the name of the file to the list.
+            }
+        }
+
+        // Convert the List of file names to an array of Strings and return it.
+        return fileNames.toArray(new String[0]);
+    }
+
 }

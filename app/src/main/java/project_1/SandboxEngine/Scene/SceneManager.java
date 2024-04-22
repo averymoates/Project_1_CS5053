@@ -1,10 +1,15 @@
 package project_1.SandboxEngine.Scene;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_B;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_COMMA;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_PERIOD;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
-
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 import java.util.*;
+import java.awt.Color;
+
 
 import org.joml.Vector2d;
 
@@ -14,6 +19,7 @@ import project_1.SandboxEngine.Pixel.Pixel;
 import project_1.SandboxEngine.Pixel.Element.Liquid.Water_pixel;
 import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
 import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
+import project_1.SandboxEngine.Utilities.Button;
 
 /**
  * Author: Avery Moates
@@ -29,6 +35,8 @@ import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
 public class SceneManager {
 
     private static SceneManager instance = null;
+
+    private static Button sandButton, waterButton, blankButton;
 
     //Change this value to change the size of all the pixels
     final private static double SQUARE_SIZE = 10;
@@ -62,6 +70,10 @@ public class SceneManager {
     public void init(){
         CellularAutomata.get().init();
         EdgeDetector.get().init();
+
+        sandButton = new Button(200f, 1100f, 300f, 100f, "BUTTON", Color.ORANGE);
+        waterButton = new Button(600f, 1100f, 300f, 100f, "BUTTON", Color.BLUE);
+        blankButton = new Button(1000f, 1100f, 300f, 100f, "BUTTON", Color.GRAY);
     }
 
     public void update(){
@@ -77,10 +89,25 @@ public class SceneManager {
      * Function to draw everything onto the scene
      */
     public void draw(){
+        glColor3f(0f,0f,0f);
+        glLineWidth(5.0f);
+        glBegin(GL_LINE_LOOP);
+            glVertex2f(0, 0);
+            glVertex2f(1900f, 0);
+            glVertex2f(1900f, 1000f);
+            glVertex2f(0, 1000f);
+        glEnd();
+
         CellularAutomata.get().draw();
-        // EdgeDetector.get().draw();
+
+        sandButton.render();
+        waterButton.render(); 
+        blankButton.render();
+        
     }
-    
+
+
+    private boolean fallingEdge = false;
     /**
      * Function to update any values that depend on user inputs
      */
@@ -95,15 +122,44 @@ public class SceneManager {
         else if(KeyListener.isKeyPressed(GLFW_KEY_W)){
             SceneManager.get().pixel_selector = 2;
         }
+        else if(KeyListener.isKeyTapped(GLFW_KEY_COMMA)) { // change detected img
+            EdgeDetector.get().setImage(EdgeDetector.get().getImageIdx()-1);
+        }
+        else if(KeyListener.isKeyTapped(GLFW_KEY_PERIOD)) { // change detected img
+            EdgeDetector.get().setImage(EdgeDetector.get().getImageIdx()+1);
+        }
 
+        Vector2d position = MouseListener.mouse_loc_in_screen();
+        // System.out.println("MOUSE: "+MouseListener.getX()+" "+MouseListener.getY());
         //Add the selected pixel so that it can be drawn later
         if(MouseListener.isMouseButtonDown(0)){
-            Vector2d position = MouseListener.mouse_loc_in_screen();
+            if (blankButton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
+                SceneManager.get().fallingEdge = true;
+                SceneManager.get().pixel_selector = 0;
+                System.out.println("BLACK SOLID SELECTED");
+            }
+            if (sandButton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
+                SceneManager.get().fallingEdge = true;
+                SceneManager.get().pixel_selector = 1;
+                System.out.println("SAND SELECTED");
+            }
+            if (waterButton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
+                SceneManager.get().fallingEdge = true;
+                SceneManager.get().pixel_selector = 2;
+                System.out.println("WATER");
+            }
+            
+
+
+
             if(CellularAutomata.get().pos_allowed(position)){
                 if(CellularAutomata.get().pos_empty(position,false)){
                     CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position,false);
                 }
             }
+        }
+        else {
+            SceneManager.get().fallingEdge = false;
         }
     }
 
