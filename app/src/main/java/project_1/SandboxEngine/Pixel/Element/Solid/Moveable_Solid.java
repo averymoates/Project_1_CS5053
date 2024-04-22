@@ -73,7 +73,7 @@ public class Moveable_Solid extends Solid {
             //I need to do a check if the below pixel is a liquid and if this weight is heavier
         }
 
-        //Check Right
+        //Check Below Right
         check = new Vector2d(this.position.x+1,this.position.y+1);
         if(CellularAutomata.get().pos_allowed(check)){
             if(CellularAutomata.get().pos_empty(check,false)){
@@ -87,7 +87,7 @@ public class Moveable_Solid extends Solid {
             
         }
 
-        //Check Left
+        //Check Below Left
         check = new Vector2d(this.position.x-1,this.position.y+1);
         if(CellularAutomata.get().pos_allowed(check)){
             if(CellularAutomata.get().pos_empty(check,false)){

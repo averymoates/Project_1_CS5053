@@ -2,6 +2,7 @@ package project_1.SandboxEngine.Scene;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_B;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 
 import java.util.*;
 
@@ -10,6 +11,7 @@ import org.joml.Vector2d;
 import project_1.SandboxEngine.KeyListener;
 import project_1.SandboxEngine.MouseListener;
 import project_1.SandboxEngine.Pixel.Pixel;
+import project_1.SandboxEngine.Pixel.Element.Liquid.Water_pixel;
 import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
 import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
 
@@ -86,6 +88,9 @@ public class SceneManager {
         else if(KeyListener.isKeyPressed(GLFW_KEY_S)){
             SceneManager.get().pixel_selector = 1;
         }
+        else if(KeyListener.isKeyPressed(GLFW_KEY_W)){
+            SceneManager.get().pixel_selector = 2;
+        }
 
         //Add the selected pixel so that it can be drawn later
         if(MouseListener.isMouseButtonDown(0)){
@@ -111,6 +116,8 @@ public class SceneManager {
                 return new Blank_pixel(position);
             case 1:
                 return new Sand_pixel(position);
+            case 2:
+                return new Water_pixel(position);
         
             default:
                 return new Blank_pixel(position);
