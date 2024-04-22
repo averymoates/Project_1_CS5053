@@ -13,6 +13,7 @@ public class CellularAutomata {
 
     //Always make changes to this grid.
     private Pixel[][] buffer_grid;
+    // public Pixel[][] pixel_array;
 
     //These values describe the total draw space.
     private int total_width;

@@ -61,6 +61,7 @@ public class SceneManager {
 
     public void init(){
         CellularAutomata.get().init();
+        EdgeDetector.get().init();
     }
 
     public void update(){
@@ -68,6 +69,8 @@ public class SceneManager {
         SceneManager.get().pull_events();
 
         CellularAutomata.get().update();
+
+        // EdgeDetector.get().update();
     }
 
     /**
@@ -75,6 +78,7 @@ public class SceneManager {
      */
     public void draw(){
         CellularAutomata.get().draw();
+        // EdgeDetector.get().draw();
     }
     
     /**
