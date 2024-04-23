@@ -1,7 +1,6 @@
 package project_1.SandboxEngine.Scene;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_B;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.*;
 
@@ -90,19 +89,21 @@ public class SceneManager {
 
         //Conway game of life setup on C.
         else if (KeyListener.isKeyPressed(GLFW_KEY_C)){
-            CellularAutomata.get().convertToGameOfLife();
+            if (!gameOfLifeMode)
+                CellularAutomata.get().convertToGameOfLife();
             SceneManager.get().pixel_selector = 2;
+            setGameOfLifeMode(true);
         }
 
         //Add the selected pixel so that it can be drawn later
         if(MouseListener.isMouseButtonDown(0)){
             Vector2d position = MouseListener.mouse_loc_in_screen();
             // Automata Selector 
-            if (SceneManager.get().gameOfLifeMode()){
+            if (SceneManager.get().getGameOfLifeMode()){
                 CellularAutomata.get().togglePixelState(position);
             } else {
-                if(CellularAutomata.get().is_position_empty(position)){
-                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position);
+                if(CellularAutomata.get().pos_empty(position, false)){
+                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position), position, false);
                 }
             }
         }
@@ -121,6 +122,7 @@ public class SceneManager {
                 return new Blank_pixel(position);
             case 1:
                 return new Sand_pixel(position);
+            case 2:
         
             default:
                 return new Blank_pixel(position);
@@ -169,7 +171,7 @@ public class SceneManager {
         ++frame_counter;
         end_time = System.nanoTime();
         if((end_time-start_time) >= 1000000000){
-            System.out.println("FPS: " + frame_counter);
+            //System.out.println("FPS: " + frame_counter);
             start_time = System.nanoTime();
             end_time = 0;
             frame_counter = 0;

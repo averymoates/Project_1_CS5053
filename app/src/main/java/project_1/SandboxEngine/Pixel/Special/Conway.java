@@ -2,6 +2,8 @@ package project_1.SandboxEngine.Pixel.Special;
 
 import org.joml.Vector2d;
 
+import project_1.SandboxEngine.Pixel.Pixel;
+import project_1.SandboxEngine.Pixel.PixelType;
 import project_1.SandboxEngine.Scene.CellularAutomata;
 
 public class Conway extends Special {
@@ -39,8 +41,12 @@ public class Conway extends Special {
             for (int dy = -1; dy <= 1; dy++){
                 if (dx == 0 && dy == 0) continue;
                 Vector2d neighorPos = new Vector2d(this.position.x + dx, this.position.y + dy);
-                if (CellularAutomata.get().isCellAlive(neighorPos)){
-                    count++;
+                Pixel pixel = CellularAutomata.get().get_pixel(position, false);
+                if (pixel instanceof Conway){
+                    Conway p = (Conway) pixel;
+                    if (p.isAlive){
+                        count++;
+                    }
                 }
             }
         }
