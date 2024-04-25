@@ -14,6 +14,10 @@ plugins {
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+
+	// maven {
+	// 	url 'https://repo1.maven.org/maven2/org/openpnp/opencv/3.4.2-2/'
+	// }
 }
 
 dependencies {
@@ -22,16 +26,13 @@ dependencies {
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
+
+	implementation group: 'org.openpnp', name: 'opencv', version: '3.4.2-0'
 }
 
+// Define the main class for the application
 application {
-    // Define the main class for the application.
     mainClass = 'project_1.App'
-}
-
-tasks.named('test') {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
 }
 
 import org.gradle.internal.os.OperatingSystem
@@ -42,22 +43,27 @@ project.ext.jomlVersion = "1.10.5"
 switch (OperatingSystem.current()) {
 	case OperatingSystem.LINUX:
 		project.ext.lwjglNatives = "natives-linux"
+		project.ext.openCVNatives = "windows-x86-64"
 		break
 	case OperatingSystem.MAC_OS:
 		project.ext.lwjglNatives = "natives-macos"
 		break
 	case OperatingSystem.WINDOWS:
 		project.ext.lwjglNatives = "natives-windows"
+		project.ext.openCVNatives = "windows-x86_64"
 		break
 }
 
-repositories {
-	mavenCentral()
-}
 
 dependencies {
 	implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
+	// implementation platform()
+	implementation group: 'org.openpnp', name: 'opencv', version: '3.4.2-0'
+
+	// add openCV dependency
+	implementation 'org.openpnp:opencv:3.4.2-0'
+	implementation "org.bytedeco.javacpp-presets:opencv:3.4.2-1.4.2"
 	implementation "org.lwjgl:lwjgl"
 	implementation "org.lwjgl:lwjgl-assimp"
 	implementation "org.lwjgl:lwjgl-glfw"
@@ -65,6 +71,9 @@ dependencies {
 	implementation "org.lwjgl:lwjgl-openal"
 	implementation "org.lwjgl:lwjgl-opengl"
 	implementation "org.lwjgl:lwjgl-stb"
+
+	runtimeOnly "org.bytedeco.javacpp-presets:opencv:3.4.2-1.4.2:$openCVNatives"
+
 	runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
 	runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"

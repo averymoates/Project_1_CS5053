@@ -92,9 +92,9 @@ abstract public class Pixel {
     }
 
     public void set_pixel_color(int r, int g, int b){
-        this.red = (float)r/256.0f;
-        this.green = (float)g/256.0f;
-        this.blue = (float)b/256.0f;
+        this.red = r / 255.0f;   // Convert from int [0, 255] to float [0.0, 1.0]
+        this.green = g / 255.0f;
+        this.blue = b / 255.0f;
     }
 
     //------------------------------------------------------------------------------------------
