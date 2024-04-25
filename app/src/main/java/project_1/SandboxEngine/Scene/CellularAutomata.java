@@ -5,6 +5,7 @@ import org.joml.Vector2d;
 import project_1.SandboxEngine.Pixel.Pixel;
 import project_1.SandboxEngine.Pixel.PixelType;
 import project_1.SandboxEngine.Pixel.Special.Conway;
+import project_1.SandboxEngine.Pixel.Element.Element;
 import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
 
 public class CellularAutomata {
@@ -48,6 +49,8 @@ public class CellularAutomata {
         System.out.println("Cellular Automata Size: "+CellularAutomata.get().total_width+"X"+CellularAutomata.get().total_height);
 
         //place any functions that needs to be called once that is related to pixels
+        Element.set_counter(0);
+        
         Conway.set_conway_animation_rate(30);
         Conway.set_animation(false);
     }
