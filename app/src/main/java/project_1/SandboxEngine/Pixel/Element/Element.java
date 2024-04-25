@@ -9,11 +9,15 @@ public class Element extends Pixel{
 
     protected double weight;
     protected int time_step;
+    protected static int counter;
 
     public Element(PixelType name, int id, double weight, Vector2d position){
         super(name, id, position);
         this.weight = weight;
-        time_step = 0;
+    }
+
+    public static void set_counter(int value){
+        counter = value;
     }
     
 }
