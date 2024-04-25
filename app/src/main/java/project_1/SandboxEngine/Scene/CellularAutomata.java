@@ -46,19 +46,32 @@ public class CellularAutomata {
         CellularAutomata.get().empty_buff_grid();
 
         System.out.println("Cellular Automata Size: "+CellularAutomata.get().total_width+"X"+CellularAutomata.get().total_height);
+
+        //place any functions that needs to be called once that is related to pixels
+        Conway.set_conway_animation_rate(30);
+        Conway.set_animation(false);
     }
 
     public void update(){
         // System.out.println("Cellular Automata Update call");
         CellularAutomata.get().empty_buff_grid();
+        Conway.increment_counter();
         for(int col=0; col<CellularAutomata.get().total_width; ++col){
             for(int row=0; row<CellularAutomata.get().total_height; ++row){
                 if(CellularAutomata.get().current_grid[col][row] != null){
                     CellularAutomata.get().current_grid[col][row].update();
+                    continue;
                 }
                 //When the conway game of life is being animated, it need to now check all the empty pixel spaces
                 if(Conway.is_animating()){
-                    
+                    if(Conway.get_counter() == 0){
+                        Vector2d position = new Vector2d(col,row);
+                        boolean add_conway = Conway.get_next_state(position, null);
+                        if(add_conway == true){
+                            Conway new_conway = new Conway(position, true);
+                            CellularAutomata.get().add_pixel(new_conway, position, true);
+                        }
+                    }
                 }
             }
         }
@@ -67,10 +80,10 @@ public class CellularAutomata {
     public void draw(){
         for(int col=0; col<total_width; ++col){
             for(int row=0; row<total_height; ++row){
-                if(buffer_grid[col][row] != null){
-                    buffer_grid[col][row].draw();
+                if(CellularAutomata.get().buffer_grid[col][row] != null){
+                    CellularAutomata.get().buffer_grid[col][row].draw();
                 }
-                current_grid[col][row] = buffer_grid[col][row];
+                CellularAutomata.get().current_grid[col][row] = CellularAutomata.get().buffer_grid[col][row];
             }
         }
     }
@@ -88,6 +101,15 @@ public class CellularAutomata {
     //Array functions
     //------------------------------------------------------------------------------------------
 
+    /**
+     * Call this function to move and/or add a pixel into the buffer or current Pixel 2d array.
+     * Buffered array is the array that holds all the updated pixels and it is the array that is always used to draw from.
+     * Current array holds the states from the previous frame. The update function will always be called on the current array.
+     * 
+     * @param pixel         The Pixel object you want to add
+     * @param position      The position in the array that you want the pixel to be
+     * @param buffer_array  True means you want to add the pixel to the buffered array. False means you want to add the pixel to the current array.
+     */
     public void add_pixel(Pixel pixel, Vector2d position, boolean buffer_array){
         if(buffer_array){
             CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y] = pixel;
