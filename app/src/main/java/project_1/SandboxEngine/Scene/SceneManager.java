@@ -1,7 +1,6 @@
 package project_1.SandboxEngine.Scene;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_B;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 
 import java.util.*;
@@ -14,6 +13,7 @@ import project_1.SandboxEngine.Pixel.Pixel;
 import project_1.SandboxEngine.Pixel.Element.Liquid.Water_pixel;
 import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
 import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
+import project_1.SandboxEngine.Pixel.Special.Conway;
 
 /**
  * Author: Avery Moates
@@ -39,6 +39,7 @@ public class SceneManager {
 
     //Value that keeps track of what the user wants to draw to the scene
     private int pixel_selector;
+    private boolean gameOfLifeMode = false;
 
     private long start_time;
     private long end_time;
@@ -91,15 +92,36 @@ public class SceneManager {
         else if(KeyListener.isKeyPressed(GLFW_KEY_W)){
             SceneManager.get().pixel_selector = 2;
         }
+        else if(KeyListener.isKeyPressed(GLFW_KEY_C)){
+            SceneManager.get().pixel_selector = 3;
+        }
+        else if(KeyListener.isKeyPressed(GLFW_KEY_A)){
+            Conway.toggle_animation();
+            System.out.println("Conway is animating: " + Conway.is_animating());
+        }
+
+        // //Conway game of life setup on C.
+        // else if (KeyListener.isKeyPressed(GLFW_KEY_C)){
+        //     if (!gameOfLifeMode)
+        //         CellularAutomata.get().convertToGameOfLife();
+        //     SceneManager.get().pixel_selector = 2;
+        //     setGameOfLifeMode(true);
+        // }
 
         //Add the selected pixel so that it can be drawn later
         if(MouseListener.isMouseButtonDown(0)){
             Vector2d position = MouseListener.mouse_loc_in_screen();
             if(CellularAutomata.get().pos_allowed(position)){
-                if(CellularAutomata.get().pos_empty(position,false)){
-                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position,false);
+                if(CellularAutomata.get().pos_empty(position, false)){
+                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position), position, false);
                 }
             }
+            // // Automata Selector 
+            // if (SceneManager.get().getGameOfLifeMode()){
+            //     CellularAutomata.get().togglePixelState(position);
+            // } else {
+                
+            // }
         }
     }
 
@@ -118,6 +140,8 @@ public class SceneManager {
                 return new Sand_pixel(position);
             case 2:
                 return new Water_pixel(position);
+            case 3:
+                return new Conway(position, true);
         
             default:
                 return new Blank_pixel(position);
@@ -133,6 +157,10 @@ public class SceneManager {
 
     public static void set_height(int h){
         SceneManager.get().height = h;
+    }
+
+    public void setGameOfLifeMode(boolean mode){
+        this.gameOfLifeMode = mode;
     }
 
     //------------------------------------------------------------------------------------------
@@ -151,6 +179,10 @@ public class SceneManager {
         return SceneManager.SQUARE_SIZE;
     }
 
+    public boolean getGameOfLifeMode(){
+        return this.gameOfLifeMode;
+    }
+
     //------------------------------------------------------------------------------------------
     //Other functions
     //------------------------------------------------------------------------------------------
@@ -158,7 +190,7 @@ public class SceneManager {
         ++frame_counter;
         end_time = System.nanoTime();
         if((end_time-start_time) >= 1000000000){
-            System.out.println("FPS: " + frame_counter);
+            //System.out.println("FPS: " + frame_counter);
             start_time = System.nanoTime();
             end_time = 0;
             frame_counter = 0;
