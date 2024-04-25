@@ -22,12 +22,15 @@ public class App {
             sysPathsField.set(null, null);
 
             // Load the OpenCV library
-            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            // System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            System.loadLibrary("opencv_java340");
             System.out.println("NATIVE IMPORTED!!");
         } catch (Exception e) {
             throw new RuntimeException("Failed to load opencv native library", e);
         }
     }
+
+    
 
     public static void main(String[] args){
         // Configure LWJGL to suppress error messages

@@ -30,7 +30,7 @@ public class KeyListener {
     }
 
     public static void keyCallback(long window, int key, int scancode, int action, int mods){
-        System.out.println(KeyListener.get().fallingEdge);
+        // System.out.println(KeyListener.get().fallingEdge);
         if(key < KeyListener.get().keyPressed.length){
             if(action == GLFW_PRESS){
                 // System.out.println(key + " " + KeyListener.get().lastKey);

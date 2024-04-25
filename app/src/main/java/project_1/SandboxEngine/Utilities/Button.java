@@ -17,6 +17,12 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+
+/**
+ * A class to create a simple axis-aligned rectangular button, with the option to overlay an image texture
+ * 
+ * @author Jack Cornette
+ */
 public class Button {
 
     private float x, y, width, height;
@@ -26,6 +32,14 @@ public class Button {
     private int textureId;
     private boolean selected;
 
+    /**
+     * @x top right corner x
+     * @y top right corner y
+     * @width x-length
+     * @height y-length
+     * @filePath path to image you want shown on this button
+     * @color shading ontop the image, Color.White does not effect the image
+     */
     public Button(float x, float y, float width, float height, String filePath, Color color) {
         this.x = x;
         this.y = y;
@@ -33,73 +47,81 @@ public class Button {
         this.height = height;
         this.filePath = filePath;
         this.color = color;
-        this.textureId = loadTexture(filePath);
+
+        if (filePath == "") this.textureId = -1;
+        else this.textureId = loadTexture(filePath);
+
         this.selected = false;
-        // // Setup for bitmap fonts
-        // listBase = glGenLists(256);
-        // setupText(listBase, x, y);
     }
+    /** get/set used for shading */
     public boolean isSelected() {
         return this.selected;
     }
     public void selected(boolean selected) {
         this.selected = selected;
     }
+    public void changeImage(String filePath) {
+        if (filePath == "") this.textureId = -1;
+        else this.textureId = loadTexture(filePath);
+    }
+    
 
+    public void translate(int deltaX, int deltaY) {
+        this.x += deltaX;
+        this.y += deltaY;
+    }
+
+    /** used to tell if user clicked on simple axis-aligned rectangle */
     public boolean clicked(float mouseX, float mouseY) {
         return mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height;
     }
 
+    /** continually call this function to draw the current state of the button */
     public void render() {
         // outline button
         glColor3f(0f, 0f, 0f);
-        // glLineWidth(5.0f);
+
         glBegin(GL_LINE_LOOP);
             glVertex2f(x, y);
             glVertex2f(x + width, y);
             glVertex2f(x + width, y + height);
             glVertex2f(x, y + height);
         glEnd();
+
         // fill button (shaded darker if currently selected)
         if (this.selected) {
-            glColor3f(color.getRed()*0.5f / 255.0f, color.getGreen()*0.5f / 255.0f, color.getBlue()*0.5f / 255.0f);
+            glColor3f(color.getRed()*0.8f / 255.0f, color.getGreen()*0.8f / 255.0f, color.getBlue()*0.8f / 255.0f);
         }
         else {
             glColor3f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f);
         }
 
-       
+       // fill button
         glBegin(GL_QUADS);
             glVertex2f(x, y);
             glVertex2f(x + width, y);
             glVertex2f(x + width, y + height);
             glVertex2f(x, y + height);
         glEnd();
-        // border
         
 
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, textureId);
+        // add texture to button
+        if (textureId != -1) {
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, textureId);
 
-        glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(x, y);  // Top-left
-        glTexCoord2f(1, 0); glVertex2f(x + width, y);   // Top-right
-        glTexCoord2f(1, 1); glVertex2f(x + width, y + height);  // Bottom-right
-        glTexCoord2f(0, 1); glVertex2f(x, y + height); // Bottom-left
-        glEnd();
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(x, y);  // Top-left
+            glTexCoord2f(1, 0); glVertex2f(x + width, y);   // Top-right
+            glTexCoord2f(1, 1); glVertex2f(x + width, y + height);  // Bottom-right
+            glTexCoord2f(0, 1); glVertex2f(x, y + height); // Bottom-left
+            glEnd();
 
-        glDisable(GL_TEXTURE_2D);
-
-    
-        // // Improved centering calculations
-        // int textWidth = text.length() * 8; // Adjust this value based on your actual font width
-        // float textX = x + (width - textWidth) / 2;
-        // float textY = y + (height / 2) + 4; // Assuming the text height is about 8 pixels
-    
-        // glColor3f(0f, 0f, 0f); // Set text color
-        // renderText(text, textX, textY);
+            glDisable(GL_TEXTURE_2D);
+        }
     }
 
+    /** loads texture image from given filePath and returns its textureID */
     public static int loadTexture(String filePath) {
         int width, height;
         ByteBuffer image;
@@ -140,29 +162,4 @@ public class Button {
         return textureID;
     }
     
-
-    // private void renderText(String text, float x, float y) {
-    //     glPushAttrib(GL_LIST_BIT);
-    //     glListBase(listBase - 32 + 128);
-    //     glRasterPos2f(x, y);
-    //     for (char c : text.toCharArray()) {
-    //         glCallList(listBase + c);
-    //     }
-    //     glPopAttrib();
-    // }
-
-    // private void setupText(int listBase, float x, float y) {
-    //     // Assume an 8x8 bitmap font
-    //     for (int i = 0; i < 256; i++) {
-    //         glNewList(listBase + i, GL_COMPILE);
-    //         glBegin(GL_LINES);
-    //             glVertex2f(x, y);
-    //             glVertex2f(x+32, y);
-    //             glVertex2f(x+32, y+32);
-    //             glVertex2f(x, y+32);
-    //         glEnd();
-    //         glTranslated(8, 0, 0);
-    //         glEndList();
-    //     }
-    // }
 }

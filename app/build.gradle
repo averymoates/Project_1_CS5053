@@ -26,6 +26,8 @@ dependencies {
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:31.1-jre'
+
+	implementation group: 'org.openpnp', name: 'opencv', version: '3.4.2-0'
 }
 
 // Define the main class for the application
@@ -57,9 +59,10 @@ dependencies {
 	implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
 	// implementation platform()
+	implementation group: 'org.openpnp', name: 'opencv', version: '3.4.2-0'
 
 	// add openCV dependency
-	// implementation 'org.openpnp:opencv:3.4.2-2'
+	implementation 'org.openpnp:opencv:3.4.2-0'
 	implementation "org.bytedeco.javacpp-presets:opencv:3.4.2-1.4.2"
 	implementation "org.lwjgl:lwjgl"
 	implementation "org.lwjgl:lwjgl-assimp"

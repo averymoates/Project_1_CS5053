@@ -11,15 +11,19 @@ import project_1.SandboxEngine.Scene.SceneManager;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+
+import javafx.scene.Scene;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.joml.Vector2d;
 import org.lwjgl.opengl.GL;
 
-/*
+/**
  * This class handles the image input into the sandbox. It uses openCV canny edge detection
  *   to conver the image into a pixelated outline of the image. This class reads an image file
  *   and outputs a 2D grid where a 1 is a filled egdge and 0 is empty. This grid output will be
@@ -29,6 +33,8 @@ import org.lwjgl.opengl.GL;
  *   gradient values considered for edge detection. Pixels with gradient values above the higher
  *   threshold are considered strong edges, while those between the two thresholds are considered
  *   weak edges. Any weak edge connected to a strong edge is also considered part of the edge.
+ * 
+ * @author Jack Cornette
  */
 public class EdgeDetector {
     private static EdgeDetector instance = null;
@@ -96,6 +102,7 @@ public class EdgeDetector {
             EdgeDetector.get().idx = idx;
             System.out.println("SHOWING IMAGE {images\\"+EdgeDetector.get().imageNames[idx]+"}");
             // Read the image file
+            // SceneManager.get().getImage().changeImage("images\\"+EdgeDetector.get().imageNames[idx]);
             Mat image = Imgcodecs.imread("images\\"+EdgeDetector.get().imageNames[idx]);
             // clear grid for new drawing
             CellularAutomata.get().empty_curr_grid();
@@ -110,11 +117,14 @@ public class EdgeDetector {
     public int getImageIdx() {
         return EdgeDetector.get().idx;
     }
+    public String getCurrentImageName() {
+        return EdgeDetector.get().imageNames[EdgeDetector.get().idx];
+    }
 
 
 
 
-    // detects edges on the current image and adds them as pixels to the CellularAutomata grid
+    /** detects edges on the current image and adds them as pixels to the CellularAutomata grid */
     public void addEdgePixels(Mat image) {
 
         EdgeDetector.get().edgeOutput = detectImage(image);
@@ -136,7 +146,7 @@ public class EdgeDetector {
             }
             // System.out.println();
         }
-        System.out.println("COUNT: "+sum+ " OF "+EdgeDetector.get().edgeOutput.rows()*EdgeDetector.get().edgeOutput.cols());
+        // System.out.println("COUNT: "+sum+ " OF "+EdgeDetector.get().edgeOutput.rows()*EdgeDetector.get().edgeOutput.cols());
     }
 
     /**
@@ -265,6 +275,28 @@ public class EdgeDetector {
 
         // Convert the List of file names to an array of Strings and return it.
         return fileNames.toArray(new String[0]);
+    }
+
+    // added this for fun
+    public static void placeRandomPixels() {
+        Random random = new Random();
+        int numPixels = random.nextInt(100); // Number of random pixels to place, adjust as necessary
+
+        for (int p = 0; p < numPixels; p++) {
+            // Generate random coordinates within the grid
+            int i = random.nextInt(EdgeDetector.get().total_height);
+            int j = random.nextInt(EdgeDetector.get().total_width);
+
+            // Generate random RGB color values
+            int red = random.nextInt(256);
+            int green = random.nextInt(256);
+            int blue = random.nextInt(256);
+
+            // Create a pixel at random location with random color
+            Pixel pixel = new Blank_pixel(new Vector2d(j, i));
+            pixel.set_pixel_color(red, green, blue);
+            CellularAutomata.get().add_pixel(pixel, new Vector2d(j, i), false);
+        }
     }
 
 }
