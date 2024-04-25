@@ -4,6 +4,9 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Author: Avery Moates
  * Date: 3/11/2024
@@ -11,6 +14,9 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 public class KeyListener {
     private static KeyListener instance = null;
     private boolean keyPressed[] = new boolean[350];
+
+    private boolean keyPressDown[] = new boolean[350];
+
 
     private KeyListener(){
 
@@ -31,6 +37,7 @@ public class KeyListener {
             }
             else if(action == GLFW_RELEASE){
                 KeyListener.get().keyPressed[key] = false;
+                KeyListener.get().keyPressDown[key] = false;
             }
         }
         else{
@@ -38,9 +45,39 @@ public class KeyListener {
         }
     }
 
+    /**
+     * Function to call to see if a certain keypress is down.
+     * 
+     * @param keyCode
+     * @return
+     */
     public static boolean isKeyPressed(int keyCode){
         if(keyCode < KeyListener.get().keyPressed.length){
             return KeyListener.get().keyPressed[keyCode];
+        }
+        else{
+            System.out.println("Key press [" + keyCode + "] is not accounted for.");
+            return false;
+        }
+    }
+
+    /**
+     * Function to call if you want something to only happen once per keypress
+     * 
+     * @param keyCode
+     * @return
+     */
+    public static boolean isKeyJustPressed(int keyCode){
+        if(keyCode < KeyListener.get().keyPressed.length){
+            KeyListener.get();
+            if(KeyListener.isKeyPressed(keyCode)){
+                if(KeyListener.get().keyPressDown[keyCode] == false){
+                    KeyListener.get().keyPressDown[keyCode] = true;
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
         else{
             System.out.println("Key press [" + keyCode + "] is not accounted for.");

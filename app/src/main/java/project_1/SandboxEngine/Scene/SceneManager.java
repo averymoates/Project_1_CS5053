@@ -95,7 +95,7 @@ public class SceneManager {
         else if(KeyListener.isKeyPressed(GLFW_KEY_C)){
             SceneManager.get().pixel_selector = 3;
         }
-        else if(KeyListener.isKeyPressed(GLFW_KEY_A)){
+        else if(KeyListener.isKeyJustPressed(GLFW_KEY_A)){
             Conway.toggle_animation();
             System.out.println("Conway is animating: " + Conway.is_animating());
         }
