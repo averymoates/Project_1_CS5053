@@ -1,9 +1,6 @@
 package project_1.SandboxEngine.Scene;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_B;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_COMMA;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_PERIOD;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -20,7 +17,7 @@ import project_1.SandboxEngine.Pixel.Element.Liquid.Water_pixel;
 import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
 import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
 import project_1.SandboxEngine.Utilities.Button;
-
+import project_1.SandboxEngine.Pixel.Special.Conway;
 /**
  * Author: Avery Moates 
  * Date:   3/11/2024
@@ -48,6 +45,7 @@ public class SceneManager {
 
     //Value that keeps track of what the user wants to draw to the scene
     private int pixel_selector;
+    private boolean gameOfLifeMode = false;
 
     private long start_time;
     private long end_time;
@@ -262,6 +260,21 @@ public class SceneManager {
                 }
             }
         }
+        else if(KeyListener.isKeyPressed(GLFW_KEY_C)){
+            SceneManager.get().pixel_selector = 3;
+        }
+        else if(KeyListener.isKeyJustPressed(GLFW_KEY_A)){
+            Conway.toggle_animation();
+            System.out.println("Conway is animating: " + Conway.is_animating());
+        }
+
+        // //Conway game of life setup on C.
+        // else if (KeyListener.isKeyPressed(GLFW_KEY_C)){
+        //     if (!gameOfLifeMode)
+        //         CellularAutomata.get().convertToGameOfLife();
+        //     SceneManager.get().pixel_selector = 2;
+        //     setGameOfLifeMode(true);
+        // }
 
         /********* MOUSE EVENT HANDLING *********/
         Vector2d position = MouseListener.mouse_loc_in_screen();
@@ -371,10 +384,16 @@ public class SceneManager {
             // }
 
             if(CellularAutomata.get().pos_allowed(position)){
-                if(CellularAutomata.get().pos_empty(position,false)){
-                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position),position,false);
+                if(CellularAutomata.get().pos_empty(position, false)){
+                    CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position), position, false);
                 }
             }
+            // // Automata Selector 
+            // if (SceneManager.get().getGameOfLifeMode()){
+            //     CellularAutomata.get().togglePixelState(position);
+            // } else {
+                
+            // }
         }
         else {
             SceneManager.get().fallingEdge = false;
@@ -414,6 +433,10 @@ public class SceneManager {
                 //                     (int)(1.0f-(greenY-250)/(400f))*256,
                 //                     (int)(1.0f-(blueY-250)/(400f))*256);
                 return pixel;
+                return new Water_pixel(position);
+            case 3:
+                return new Conway(position, true);
+        
             default:
             pixel = new Blank_pixel(position);
             pixel.set_pixel_color((int)((1.0f-(redY-250)/400f)*256),
@@ -434,6 +457,10 @@ public class SceneManager {
         SceneManager.get().height = h;
     }
 
+    public void setGameOfLifeMode(boolean mode){
+        this.gameOfLifeMode = mode;
+    }
+
     //------------------------------------------------------------------------------------------
     //getter functions
     //------------------------------------------------------------------------------------------
@@ -450,6 +477,10 @@ public class SceneManager {
         return SceneManager.SQUARE_SIZE;
     }
 
+    public boolean getGameOfLifeMode(){
+        return this.gameOfLifeMode;
+    }
+
     //------------------------------------------------------------------------------------------
     //Other functions
     //------------------------------------------------------------------------------------------
@@ -457,7 +488,7 @@ public class SceneManager {
         ++frame_counter;
         end_time = System.nanoTime();
         if((end_time-start_time) >= 1000000000){
-            System.out.println("FPS: " + frame_counter);
+            //System.out.println("FPS: " + frame_counter);
             start_time = System.nanoTime();
             end_time = 0;
             frame_counter = 0;
