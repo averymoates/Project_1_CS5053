@@ -10,6 +10,7 @@ import java.awt.Color;
 
 import org.joml.Vector2d;
 
+import javafx.scene.control.Cell;
 import project_1.SandboxEngine.KeyListener;
 import project_1.SandboxEngine.MouseListener;
 import project_1.SandboxEngine.Pixel.Pixel;
@@ -39,7 +40,7 @@ public class SceneManager {
     public Button showImage;
 
     //Change this value to change the size of all the pixels
-    final private static double SQUARE_SIZE = 10;
+    private double SQUARE_SIZE;
 
     //This will keep track of the size of the window at all times
     private int width;
@@ -53,7 +54,7 @@ public class SceneManager {
     private long end_time;
     private int frame_counter;
 
-    private int redY=300, greenY=300, blueY=300;
+    private float redY, greenY, blueY, colorYRange, colorYStart;
 
     private SceneManager(){
         this.pixel_selector = 0;
@@ -73,6 +74,12 @@ public class SceneManager {
     public void init(){
         CellularAutomata.get().init();
         EdgeDetector.get().init();
+        redY=0.5f;
+        greenY=0.5f;
+        blueY=0.5f;
+        colorYRange=0.3f*height;
+        colorYStart=0.15f*height;
+        SQUARE_SIZE = SceneManager.get_height()*0.75*0.01;
 
         sandButton = new Button(100f, height - 250, 300f, 100f, "images\\buttons\\sand.png", Color.ORANGE);
         waterButton = new Button(450f, height - 250, 300f, 100f, "images\\buttons\\water.png", Color.BLUE);
@@ -82,9 +89,9 @@ public class SceneManager {
         image = new Button(1225f, height - 200, 300f, 85f, "images\\buttons\\image.png", Color.WHITE);
         simulate = new Button(1625f, height - 250, 300f, 100f, "images\\buttons\\simulate.png", Color.green);
         clear = new Button(width - 560, 25, 300f, 85f, "images\\buttons\\clear.png", Color.WHITE);
-        redButton = new Button(width - 535, (float)redY, 50f, 50f, "", Color.RED);
-        greenButton = new Button(width - 435, (float)greenY, 50f, 50f, "", Color.GREEN);
-        blueButton = new Button(width - 335, (float)blueY, 50f, 50f, "", Color.BLUE);
+        redButton = new Button(width - 535, redY*colorYRange+colorYStart, 50f, 50f, "", Color.RED);
+        greenButton = new Button(width - 435, greenY*colorYRange+colorYStart, 50f, 50f, "", Color.GREEN);
+        blueButton = new Button(width - 335, blueY*colorYRange+colorYStart, 50f, 50f, "", Color.BLUE);
         
 
         showImage = new Button(1625f, 550f, 300f, 205f, "images\\aaablank.png", Color.WHITE);
@@ -98,7 +105,7 @@ public class SceneManager {
     public void update(){
         fps();
         SceneManager.get().pull_events();
-
+        SQUARE_SIZE = SceneManager.get_width()*0.75*0.01;
         CellularAutomata.get().update();
     }
 
@@ -107,23 +114,25 @@ public class SceneManager {
      * Function to draw everything onto the scene
      */
     public void draw(){
+        SQUARE_SIZE = SceneManager.get_width()*0.75*0.01;
         // start with a white canvas
         glColor3f(1f,1f,1f);
         glBegin(GL_POLYGON);
             glVertex2f(0, 0);
-            glVertex2f(width - 655, 0);
-            glVertex2f(width - 655, height - 335);
-            glVertex2f(0, height - 335);
+            glVertex2f(width*0.75f, 0);
+            glVertex2f(width*0.75f, height*0.75f);
+            glVertex2f(0, height*0.75f);
         glEnd();
+        // System.out.println(width+" "+height);
 
         // outline sandbox environment
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINE_LOOP);
             glVertex2f(0, 0);
-            glVertex2f(width - 655, 0);
-            glVertex2f(width - 655, height - 335);
-            glVertex2f(0, height - 335);
+            glVertex2f(width*0.75f, 0);
+            glVertex2f(width*0.75f, height*0.75f);
+            glVertex2f(0, height*0.75f);
         glEnd();
 
         /******* COLOR SLIDER ********/
@@ -131,56 +140,65 @@ public class SceneManager {
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINES);
-            glVertex2f(width - 510, 150f);
-            glVertex2f(width - 510, 525f);
+            glVertex2f(width*0.81f, height*0.15f);
+            glVertex2f(width*0.81f, height*0.45f);
         glEnd();
 
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINES);
-            glVertex2f(width - 410, 150f);
-            glVertex2f(width - 410, 525f);
+            glVertex2f(width*0.86f, height*0.15f);
+            glVertex2f(width*0.86f, height*0.45f);
         glEnd();
 
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINES);
-            glVertex2f(width - 310, 150f);
-            glVertex2f(width - 310, 525f);
+            glVertex2f(width*0.91f, height*0.15f);
+            glVertex2f(width*0.91f, height*0.45f);
         glEnd();
 
         // display current color of sliders
-        glColor3f(1.0f-(redY-250)/(300f),1.0f-(greenY-250)/(300f),1.0f-(blueY-250)/(300f));
+        // System.out.println(1.0f-redY, 1.0f-greenY, 1.0f-blueY);
+        glColor3f(1.0f-redY, 1.0f-greenY, 1.0f-blueY);
         glBegin(GL_POLYGON);
-            glVertex2f(width - 510, 550f);
-            glVertex2f(width - 310, 550f);
-            glVertex2f(width - 310, 750f);
-            glVertex2f(width - 510, 750f);
+            glVertex2f(width*0.81f, height*0.48f);
+            glVertex2f(width*0.91f, height*0.48f);
+            glVertex2f(width*0.91f, height*0.58f);
+            glVertex2f(width*0.81f, height*0.58f);
         glEnd();
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINE_LOOP);
-            glVertex2f(width - 510, 550f);
-            glVertex2f(width - 310, 550f);
-            glVertex2f(width - 310, 750f);
-            glVertex2f(width - 510, 750f);
+        glVertex2f(width*0.81f, height*0.48f);
+        glVertex2f(width*0.91f, height*0.48f);
+        glVertex2f(width*0.91f, height*0.58f);
+        glVertex2f(width*0.81f, height*0.58f);
         glEnd();
 
         CellularAutomata.get().draw();
 
         // continually display buttons
-        sandButton.render();
-        waterButton.render(); 
-        blankButton.render();
-        leftArrow.render();
-        rightArrow.render();
-        image.render();
-        clear.render();
-        redButton.render();
-        greenButton.render();
-        blueButton.render();
-        showImage.render();
-        simulate.render();
+        sandButton.render(width*0.01f, height*0.8f, width*0.2f, height*0.07f);
+        waterButton.render(width*0.26f, height*0.8f, width*0.2f, height*0.07f); 
+        blankButton.render(width*0.51f, height*0.8f, width*0.2f, height*0.07f);
+
+        leftArrow.render(width*0.75f, height*0.8f, width*0.1f, height*0.07f);
+        rightArrow.render(width*0.88f, height*0.8f, width*0.1f, height*0.07f);
+        image.render(width*0.76f, height*0.9f, width*0.2f, height*0.07f);
+
+        simulate.render(width*0.26f, height*0.9f, width*0.2f, height*0.07f);
+
+        clear.render(width*0.77f, height*0.05f, width*0.2f, height*0.07f);
+
+        colorYRange=0.3f*height;
+        colorYStart=0.15f*height;
+        redButton.render(width*0.8f, redY*colorYRange+colorYStart, width*0.02f, width*0.02f);
+        greenButton.render(width*0.85f, greenY*colorYRange+colorYStart, width*0.02f, width*0.02f);
+        blueButton.render(width*0.9f, blueY*colorYRange+colorYStart, width*0.02f, width*0.02f);
+
+        showImage.render(width*0.785f, height*0.62f, width*0.15f, height*0.15f);
+        
     }
 
 
@@ -209,56 +227,55 @@ public class SceneManager {
             showImage.changeImage("images\\"+EdgeDetector.get().getCurrentImageName());
         }
         // edge detector thresholds
-        else if(KeyListener.isKeyTapped(GLFW_KEY_SEMICOLON)) { // decrease thresh1
+        else if(KeyListener.isKeyPressed(GLFW_KEY_SEMICOLON)) { // decrease thresh1
             EdgeDetector.get().updateEdgeThresholds(-10, 0);
         }
-        else if(KeyListener.isKeyTapped(GLFW_KEY_APOSTROPHE)) { // increase thresh1
+        else if(KeyListener.isKeyPressed(GLFW_KEY_APOSTROPHE)) { // increase thresh1
             EdgeDetector.get().updateEdgeThresholds(10, 0);
         }
-        else if(KeyListener.isKeyTapped(GLFW_KEY_LEFT_BRACKET)) { // decrease thresh2
+        else if(KeyListener.isKeyPressed(GLFW_KEY_LEFT_BRACKET)) { // decrease thresh2
             EdgeDetector.get().updateEdgeThresholds(0, -10);
         }
-        else if(KeyListener.isKeyTapped(GLFW_KEY_RIGHT_BRACKET)) { // decrease thresh2
+        else if(KeyListener.isKeyPressed(GLFW_KEY_RIGHT_BRACKET)) { // decrease thresh2
             EdgeDetector.get().updateEdgeThresholds(0, 10);
         }
         else if(KeyListener.isKeyPressed(GLFW_KEY_UP)) { // move selected slider UP
             if(redButton.isSelected()) {
-                if (redY-1 > 125) {
-                    redY -= 1;
-                    redButton.translate(0, -1);
+                if (redY-0.005f >= 0.0f) {
+                    redY -= 0.005f;
+                    redButton.translate(0, (int)(-0.005f*colorYRange));
                 }
             }
             if(greenButton.isSelected()) {
-                if (greenY-1 > 125) {
-                    greenY -= 1;
-                    greenButton.translate(0, -1);
+                if (greenY-0.005f >= 0.0f) {
+                    greenY -= 0.005f;
+                    greenButton.translate(0, (int)(-0.005f*colorYRange));
                 }
             }
             if(blueButton.isSelected()) {
-                if (blueY-1 > 125) {
-                    blueY -= 1;
-                    blueButton.translate(0, -1);
+                if (blueY-0.005f >= 0.0f) {
+                    blueY -= 0.005f;
+                    blueButton.translate(0, (int)(-0.005f*colorYRange));
                 }
             }
         }
         else if(KeyListener.isKeyPressed(GLFW_KEY_DOWN)) { // move selected slider DOWN
             if(redButton.isSelected()) {
-                if (redY+1 < 500) {
-                    redY += 1;
-                    redButton.translate(0, 1);
+                if (redY+0.005f <= 1f) {
+                    redY += 0.005f;
+                    redButton.translate(0, (int)(0.005f*colorYRange));
                 }
             }
             if(greenButton.isSelected()) {
-                if (greenY+1 < 500) {
-                    greenY += 1;
-                    greenButton.translate(0, 1);
+                if (greenY+0.005f <= 1f) {
+                    greenY +=  0.005f;
+                    greenButton.translate(0, (int)(0.005f*colorYRange));
                 }
             }
             if(blueButton.isSelected()) {
-                if (blueY+1 < 500) {
-                    blueY 
-                    += 1;
-                    blueButton.translate(0, 1);
+                if (blueY+0.005f <= 1f) {
+                    blueY +=  0.005f;
+                    blueButton.translate(0, (int)(0.005f*colorYRange));
                 }
             }
         }
@@ -383,7 +400,7 @@ public class SceneManager {
                 // shade this button and unshade other pixel button types
                 simulate.selected(true);
                 System.out.println("SIMULATING");
-                // Conway.setModeSelector(1);
+                CellularAutomata.get().convertToGameOfLife();
                 Conway.toggle_animation();
             }
             // else {
@@ -391,6 +408,7 @@ public class SceneManager {
             // }
 
             if(CellularAutomata.get().pos_allowed(position)){
+                // System.out.println("MOUSE: "+position.x+", "+position.y);
                 if(CellularAutomata.get().pos_empty(position, false)){
                     CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position), position, false);
                 }
@@ -424,21 +442,15 @@ public class SceneManager {
         switch (SceneManager.get().pixel_selector) {
             case 0:
                 pixel = new Blank_pixel(position);
-                pixel.set_pixel_color((int)((1.0f-(redY-250)/400f)*256),
-                                    (int)((1.0f-(greenY-250)/(400f))*256),
-                                    (int)((1.0f-(blueY-250)/(400f))*256));
+                pixel.set_pixel_color((int)((1.0f-redY)*256), 
+                                        (int)((1.0f-greenY)*256), 
+                                        (int)((1.0f-blueY)*256));
                 return pixel;
             case 1:
                 pixel = new Sand_pixel(position);
-                // pixel.set_pixel_color((int)(1.0f-(redY-250)/(400f))*256,
-                //                     (int)(1.0f-(greenY-250)/(400f))*256,
-                //                     (int)(1.0f-(blueY-250)/(400f))*256);
                 return pixel;
             case 2:
                 pixel = new Water_pixel(position);
-                // pixel.set_pixel_color((int)(1.0f-(redY-250)/(400f))*256,
-                //                     (int)(1.0f-(greenY-250)/(400f))*256,
-                //                     (int)(1.0f-(blueY-250)/(400f))*256);
                 return pixel;
             case 3:
                 return new Conway(position, true);
@@ -448,9 +460,9 @@ public class SceneManager {
         
             default:
             pixel = new Blank_pixel(position);
-            pixel.set_pixel_color((int)((1.0f-(redY-250)/400f)*256),
-                                (int)((1.0f-(greenY-250)/(400f))*256),
-                                (int)((1.0f-(blueY-250)/(400f))*256));
+            pixel.set_pixel_color((int)((1.0f-redY)*256), 
+                                    (int)((1.0f-greenY)*256), 
+                                    (int)((1.0f-blueY)*256));
             return pixel;
         }
     }
@@ -479,11 +491,6 @@ public class SceneManager {
 
     public static int get_height(){
         return SceneManager.get().height;
-    }
-
-    public static double get_square_size(){
-        SceneManager.get();
-        return SceneManager.SQUARE_SIZE;
     }
 
     public boolean getGameOfLifeMode(){

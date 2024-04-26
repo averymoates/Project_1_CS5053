@@ -39,7 +39,7 @@ import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
-
+import static org.lwjgl.glfw.GLFW.*;
 import java.util.*;
 
 import org.joml.Vector2d;
@@ -47,6 +47,7 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
+import project_1.SandboxEngine.Scene.CellularAutomata;
 import project_1.SandboxEngine.Scene.SceneManager;
 import project_1.SandboxEngine.Utilities.ShapeMaker;
 
@@ -63,12 +64,18 @@ public class Window {
     private int[] w = null;
     private int[] h = null;
 
+    // Keep track of the aspect ratio
+    private float aspectRatio = 1.0f;
+
     private static Window window = null;
+
+    // Callback to enforce the window aspect ratio
+    private GLFWWindowSizeCallback windowSizeCallback;
 
     private Window(){
 
-        this.width = 1920;
-        this.height = 1080;
+        this.width = 1000;
+        this.height = 1000;
 
         this.title = "SandBox Engine";
 
@@ -110,7 +117,7 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
 
         System.out.println("Sandbox Simulator. CS 5053 Project 1");
 
@@ -119,6 +126,29 @@ public class Window {
         if(this.glfwWindow == NULL){
             throw new IllegalStateException("Failed to create GLFW Window.");
         }
+
+        // Configure GLFW to be resizable
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+
+        // Create a window resize callback
+        windowSizeCallback = new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                // Decide the new size for the window
+                int newSize = Math.min(width, height);
+
+                // Update the GLFW window
+                glfwSetWindowSize(window, newSize, newSize);
+
+                // Update the OpenGL viewport
+                glViewport(0, 0, newSize, newSize);
+            }
+        };
+
+        // Set the resize callback
+        glfwSetWindowSizeCallback(this.glfwWindow, windowSizeCallback);
+
+
 
         //Set mouse callback functions
         glfwSetCursorPosCallback(this.glfwWindow, MouseListener::mousePosCallback);
@@ -162,7 +192,6 @@ public class Window {
             glfwPollEvents();
             // MouseListener.testMouseFunctions();
             // KeyListener.testSpaceKeyFunction();
-            
             set_up_screen_coords(false);
 
             //Set the background to a gray color
@@ -197,10 +226,10 @@ public class Window {
 
     private void draw_square_cursor(){
         //Draw a square to help the user know where they are placing a pixel
-        double x_value = MouseListener.mouse_loc_in_screen().x*SceneManager.get_square_size();
-        double y_value = MouseListener.mouse_loc_in_screen().y*SceneManager.get_square_size();
+        double x_value = MouseListener.mouse_loc_in_screen().x*CellularAutomata.get().get_square_size();
+        double y_value = MouseListener.mouse_loc_in_screen().y*CellularAutomata.get().get_square_size();
         glColor3f(105.0f/256.0f, 103.0f/256.0f, 99.0f/256.0f);
-        ShapeMaker.fill_square(x_value, y_value, SceneManager.get_square_size());
+        ShapeMaker.fill_square(x_value, y_value, CellularAutomata.get().get_square_size());
 
     }
 }
