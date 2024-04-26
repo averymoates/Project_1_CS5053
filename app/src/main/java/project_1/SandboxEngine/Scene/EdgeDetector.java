@@ -162,7 +162,7 @@ public class EdgeDetector {
         edgeOutput = detectEdges(resizedImage, thresh1, thresh2);
 
         // Save the output image for debug purposes
-        Imgcodecs.imwrite("output.png", edgeOutput);
+        // Imgcodecs.imwrite("output.png", edgeOutput);
 
         return edgeOutput;
     }
