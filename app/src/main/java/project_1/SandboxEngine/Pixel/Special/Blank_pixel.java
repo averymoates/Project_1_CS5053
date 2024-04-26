@@ -12,7 +12,7 @@ import project_1.SandboxEngine.Pixel.PixelType;
 public class Blank_pixel extends Special{
 
     public Blank_pixel(Vector2d position){
-        super(PixelType.BLANK,0,position);
+        super(PixelType.BLANK,0,position,false);
     }
 
     

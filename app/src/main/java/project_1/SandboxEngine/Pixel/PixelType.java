@@ -11,7 +11,6 @@ public enum PixelType {
 
     //Special Pixels
     BLANK,
-
-    //Conway Pixels
-    CONWAY;
+    CONWAY,
+    Langston;
 }

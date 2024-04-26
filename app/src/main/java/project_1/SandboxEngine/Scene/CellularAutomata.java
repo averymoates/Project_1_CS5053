@@ -5,6 +5,8 @@ import org.joml.Vector2d;
 import project_1.SandboxEngine.Pixel.Pixel;
 import project_1.SandboxEngine.Pixel.PixelType;
 import project_1.SandboxEngine.Pixel.Special.Conway;
+import project_1.SandboxEngine.Pixel.Special.Langston;
+import project_1.SandboxEngine.Pixel.Special.Special;
 import project_1.SandboxEngine.Pixel.Element.Element;
 import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
 
@@ -57,8 +59,9 @@ public class CellularAutomata {
         //place any functions that needs to be called once that is related to pixels
         Element.set_counter(0);
         
-        Conway.set_conway_animation_rate(30);
-        Conway.set_animation(false);
+        Conway.set_animation_rate(30);
+        Langston.set_animation_rate(30);
+        Special.set_animation(false);
     }
 
     public void update(){
@@ -71,11 +74,11 @@ public class CellularAutomata {
                     CellularAutomata.get().current_grid[col][row].update();
                     continue;
                 }
-                //When the conway game of life is being animated, it need to now check all the empty pixel spaces
-                if(Conway.is_animating() && Conway.getModeSelector() == 0){
-                    if(Conway.get_counter() == 0){
+                //When the special automata is being animated, it needs to now check all the empty pixel spaces
+                if(Special.is_animating()){
+                    if((Special.get_counter() % Conway.get_animation_rate()) == 0){
                         Vector2d position = new Vector2d(col,row);
-                        boolean add_conway = Conway.applyGameofLifeRules(position, null);
+                        boolean add_conway = Conway.applyConwayRules(position, null);
                         if(add_conway == true){
                             Conway new_conway = new Conway(position, true);
                             CellularAutomata.get().add_pixel(new_conway, position, true);
@@ -85,30 +88,30 @@ public class CellularAutomata {
             }
         }
 
-        if(Conway.is_animating() && Conway.getModeSelector() == 1){
-            //First Iteration, pick a random point, we will just select one near the center for now.
-            //Gets next position for the ant, and the next_ant
-            if(ant == null){
-                ant = new Vector2d(CellularAutomata.get().total_width / 2, CellularAutomata.get().total_height / 2);
-                System.out.println(ant);
-                next_ant = new Vector2d(Conway.applyLangstonAntRules(ant));
-                System.out.println(next_ant);
-            } else{
-                ant = next_ant;
-                next_ant = new Vector2d(Conway.applyLangstonAntRules(ant));
-            }
+        // if(Conway.is_animating() && Conway.getModeSelector() == 1){
+        //     //First Iteration, pick a random point, we will just select one near the center for now.
+        //     //Gets next position for the ant, and the next_ant
+        //     if(ant == null){
+        //         ant = new Vector2d(CellularAutomata.get().total_width / 2, CellularAutomata.get().total_height / 2);
+        //         System.out.println(ant);
+        //         next_ant = new Vector2d(Conway.applyLangstonAntRules(ant));
+        //         System.out.println(next_ant);
+        //     } else{
+        //         ant = next_ant;
+        //         next_ant = new Vector2d(Conway.applyLangstonAntRules(ant));
+        //     }
 
-            // Can handle any type of cell, essentially eating away and reforming the grid, 
-            // If there is an empty cell that needs to be filled in, use a Conway cell, if a cell needs to be flipped, remove the cell from the grid.
-            if(CellularAutomata.get().pos_empty(ant, false)){
-                CellularAutomata.get().add_pixel(new Conway(ant, true), ant, true);
-                System.out.print("This ant was empty");
-            } else{
-                CellularAutomata.get().remove_pixel(ant);
-                                System.out.print("This ant wasnt empty");
-            }
-            System.out.println(next_ant);
-        }
+        //     // Can handle any type of cell, essentially eating away and reforming the grid, 
+        //     // If there is an empty cell that needs to be filled in, use a Conway cell, if a cell needs to be flipped, remove the cell from the grid.
+        //     if(CellularAutomata.get().pos_empty(ant, false)){
+        //         CellularAutomata.get().add_pixel(new Conway(ant, true), ant, true);
+        //         System.out.print("This ant was empty");
+        //     } else{
+        //         CellularAutomata.get().remove_pixel(ant);
+        //                         System.out.print("This ant wasnt empty");
+        //     }
+        //     System.out.println(next_ant);
+        // }
     }
 
     public void draw(){
@@ -153,8 +156,23 @@ public class CellularAutomata {
         }
     }
 
-    public void remove_pixel(Vector2d position){
-        CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y] = null;
+    /**
+     * Function to remove a certain pixel from either the current grid or buffer grid. It also returns the removed pixel if you need it
+     * @param position
+     * @param buffer_array
+     * @return
+     */
+    public Pixel remove_pixel(Vector2d position, boolean buffer_array){
+        if(buffer_array){
+            Pixel temp = CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y];
+            CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y] = null;
+            return temp;
+        }
+        else{
+            Pixel temp = CellularAutomata.get().current_grid[(int)position.x][(int)position.y];
+            CellularAutomata.get().current_grid[(int)position.x][(int)position.y] = null;
+            return temp;
+        }
     }
 
     /**

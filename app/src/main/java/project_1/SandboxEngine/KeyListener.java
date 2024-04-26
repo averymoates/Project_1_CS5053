@@ -4,10 +4,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
-import java.security.Key;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Author: Avery Moates
  * Date: 3/11/2024
@@ -46,10 +42,11 @@ public class KeyListener {
             }
             else if(action == GLFW_RELEASE){
                 KeyListener.get().keyPressed[key] = false;
-            }
-            else {
                 KeyListener.get().keyPressDown[key] = false;
             }
+            // else {
+                
+            // }
         }
         else{
             System.out.println("Key press [" + key + "] is not accounted for.");
