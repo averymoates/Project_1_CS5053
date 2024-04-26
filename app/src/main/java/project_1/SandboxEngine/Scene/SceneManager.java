@@ -19,6 +19,8 @@ import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
 import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
 import project_1.SandboxEngine.Utilities.Button;
 import project_1.SandboxEngine.Pixel.Special.Conway;
+import project_1.SandboxEngine.Pixel.Special.Langston;
+import project_1.SandboxEngine.Pixel.Special.Special;
 /**
  * Author: Avery Moates 
  * Date:   3/11/2024
@@ -92,7 +94,7 @@ public class SceneManager {
         blueButton = new Button(width - 335, blueY*colorYRange+colorYStart, 50f, 50f, "", Color.BLUE);
         
 
-        showImage = new Button(2000f, 1000, 300f, 205f, "images\\aaablank.png", Color.WHITE);
+        showImage = new Button(1625f, 550f, 300f, 205f, "images\\aaablank.png", Color.WHITE);
 
         blankButton.selected(true);
     }
@@ -280,9 +282,12 @@ public class SceneManager {
         else if(KeyListener.isKeyPressed(GLFW_KEY_C)){
             SceneManager.get().pixel_selector = 3;
         }
+        else if(KeyListener.isKeyPressed(GLFW_KEY_L)){
+            SceneManager.get().pixel_selector = 4;
+        }
         else if(KeyListener.isKeyJustPressed(GLFW_KEY_A)){
-            Conway.toggle_animation();
-            System.out.println("Conway is animating: " + Conway.is_animating());
+            Special.toggle_animation();
+            System.out.println("Animation is: " + Conway.is_animating());
         }
 
         // //Conway game of life setup on C.
@@ -449,6 +454,9 @@ public class SceneManager {
                 return pixel;
             case 3:
                 return new Conway(position, true);
+
+            case 4:
+                return new Langston(position, true);
         
             default:
             pixel = new Blank_pixel(position);

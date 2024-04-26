@@ -1,23 +1,20 @@
 package project_1.SandboxEngine.Pixel.Special;
 
+import java.util.Vector;
+
 import org.joml.Vector2d;
 
+import javafx.scene.control.Cell;
 import project_1.SandboxEngine.Pixel.Pixel;
 import project_1.SandboxEngine.Pixel.PixelType;
 import project_1.SandboxEngine.Scene.CellularAutomata;
 
 public class Conway extends Special {
     private boolean isAlive;
-    
-    //Variable to make sure all the conway pixels move at the same time
-    private static boolean animate;
     private static int animation_rate;
-    private static int animation_counter;
-
 
     public Conway(Vector2d position, boolean isAlive) {
-        super(PixelType.CONWAY, 3, position);
-        this.isAlive = isAlive;
+        super(PixelType.CONWAY, 3, position, isAlive);
 
         this.red = 139.0f/255.0f;
         this.green = 37.0f/255.0f;
@@ -26,14 +23,15 @@ public class Conway extends Special {
 
     @Override
     public void update(){
+
         //If the animation is turned off, then just move this pixel to the buffer array
-        if(Conway.is_animating()==false){
+        if(is_animating()==false){
             CellularAutomata.get().add_pixel(this, this.position, true);
         }
         //If the animation is on, then run the conway rules to see if it makes it to the next generation
         else{
-            if(animation_counter == 0){
-                boolean next_state = Conway.get_next_state(this.position, this);
+            if((animation_counter % animation_rate) == 0){
+                boolean next_state = Conway.applyConwayRules(this.position, this);
                 //If the next state is to be alive, then just add this pixel to next buffer.
                 if(next_state == true){
                     CellularAutomata.get().add_pixel(this, this.position, true);
@@ -43,48 +41,25 @@ public class Conway extends Special {
                 CellularAutomata.get().add_pixel(this, this.position, true);
             }
         }
-    }
 
-    //Static method that will allow the user to stop, start, speed up speed down the conway game of life animations
-    public static void toggle_animation(){
-        animate = !animate;
-        animation_counter = 0;
-    }
-
-    public static void set_animation(boolean state){
-        animate = state;
-        animation_counter = 0;
-    }
-
-    public static boolean is_animating(){
-        return animate;
-    }
-
-    public static void set_conway_animation_rate(int rate){
-        animation_rate = rate;
-    }
-
-    public static int get_animation_rate(){
-        return animation_rate;
-    }
-
-    public static void increment_counter(){
-        if(animate){
-            if(animation_counter == animation_rate){
-                animation_counter = 0;
-            }
-            else{
-                ++animation_counter; 
-            }
+        // switch (getModeSelector()) {
+        //     //
+        //     case 0:
+                
+        //     break;
+        //         //Langston's Ant
+        //         case 1:
+        //                 if(Conway.is_animating()==false){
+        //                     CellularAutomata.get().add_pixel(this, this.position, true);
+        //                 }
+        //                 else{
+        //                     if(animation_counter != 0){
+        //                         CellularAutomata.get().add_pixel(this, this.position, true);
+        //                     }
+        //                 }
+        //         break;
+        //             }
         }
-        else{
-            animation_counter = 0;
-        }
-    }
-
-    public static int get_counter(){
-        return animation_counter;
-    }
 
     public static int countAliveNeighbors(Vector2d position){
         int count = 0;
@@ -116,7 +91,7 @@ public class Conway extends Special {
         return count;
     }
 
-    public static boolean get_next_state(Vector2d position, Pixel pixel){
+    public static boolean applyConwayRules(Vector2d position, Pixel pixel){
         int alive_neighbors = Conway.countAliveNeighbors(position);
         
         //check if the conway pixel is dead
@@ -147,66 +122,62 @@ public class Conway extends Special {
         }
 
     }
+
+    // public static Vector2d applyLangstonAntRules(Vector2d ant){
+    //     double xNextPos = ant.x + antx;
+    //     double yNextPos = ant.y + anty;
     
-    /*
-     * Overrides the update method to go through all the pixels and run the Game of Life rules.
-     */
-    // @Override
-    // public void update(){
-    //     int aliveNeighbors = countAliveNeighbors();
-    //     boolean nextState = applyGameofLifeRules(isAlive, aliveNeighbors);
+    //     // Check and wrap around the grid if the ant goes beyond the boundaries
+    //     int gridWidth = CellularAutomata.get().get_width();   // Assuming total_width is accessible
+    //     int gridHeight = CellularAutomata.get().get_height(); // Assuming total_height is accessible
+    
+    //     if (xNextPos >= gridWidth) xNextPos = 0;           // Wrap horizontally
+    //     else if (xNextPos < 0) xNextPos = gridWidth - 1;
+    
+    //     if (yNextPos >= gridHeight) yNextPos = 0;          // Wrap vertically
+    //     else if (yNextPos < 0) yNextPos = gridHeight - 1;
+    
+    //     Vector2d nextPos = new Vector2d(xNextPos, yNextPos);
+        
 
-    //     if (nextState != this.isAlive){
-    //         this.isAlive = nextState;
-    //     }
-    // }
-
-    /*
-     * Goes through and counts the four othogonal cells of the pixel at (x,y) 
-     * 
-     * | x
-     * |xox
-     * | x
-     * 
-     */
-    // private int countAliveNeighbors(){
-    //     int count = 0;
-    //     for (int dx = -1; dx <= 1; dx++){
-    //         for (int dy = -1; dy <= 1; dy++){
-    //             if (dx == 0 && dy == 0) continue;
-    //             Vector2d neighorPos = new Vector2d(this.position.x + dx, this.position.y + dy);
-    //             Pixel pixel = CellularAutomata.get().get_pixel(position, false);
-    //             if (pixel instanceof Conway){
-    //                 Conway p = (Conway) pixel;
-    //                 if (p.isAlive){
-    //                     count++;
-    //                 }
-    //             }
+    //     /*
+    //      * rules can be found here https://rosettacode.org/wiki/Langton%27s_ant#Java
+    //      */
+    //     if(!CellularAutomata.get().pos_empty(nextPos, false)) {
+    //         Pixel p = CellularAutomata.get().get_pixel(nextPos, false);
+    //         // Turn left
+    //         if (antx == 0) { 
+    //             antx = anty;
+    //             anty = 0;
+    //         } else {
+    //             anty = -antx;
+    //             antx = 0;
+    //         }
+    //     } else {
+    //         if(antx == 0){
+    //             antx = -anty;
+    //             anty = 0;
+    //         } else{
+    //             anty = antx;
+    //             antx = 0;
     //         }
     //     }
-
-    //     return count;
-
+    //     return nextPos;
     // }
-
-    /*
-     * Applies game of lifes rules, you can read more here
-     * https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
-     */
-    private boolean applyGameofLifeRules(boolean currentState, int aliveNeighbors){
-        if (currentState && (aliveNeighbors == 2 || aliveNeighbors == 3)){
-            return true;
-        } else if (!currentState && aliveNeighbors == 3){
-            return true;
-        } 
-        return false;
-    }
-
+    
     public void setAlive(boolean state){
         this.isAlive = state;
     }
 
     public boolean getAlive(){
         return this.isAlive;
+    }
+
+    public static void set_animation_rate(int rate){
+        animation_rate = rate;
+    }
+
+    public static int get_animation_rate(){
+        return animation_rate;
     }
 }
