@@ -16,8 +16,33 @@ public class Element extends Pixel{
         this.weight = weight;
     }
 
+    /**
+     * Function to set the static counter value for all elements
+     * 
+     * @param value
+     */
     public static void set_counter(int value){
         counter = value;
+    }
+
+    /**
+     * Function to incement the static counter
+     */
+    public static void increment_counter(){
+        if(counter == 60){
+            counter = 0;
+        }
+        else{
+            ++counter;
+        }
+    }
+
+    /**
+     * Function to get the value of the static counter
+     * @return
+     */
+    public static int get_counter(){
+        return counter;
     }
     
 }
