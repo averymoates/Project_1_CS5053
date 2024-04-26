@@ -2,6 +2,7 @@ package project_1.SandboxEngine.Scene;
 
 import org.joml.Vector2d;
 
+import javafx.css.SimpleStyleableDoubleProperty;
 import project_1.SandboxEngine.Pixel.Pixel;
 import project_1.SandboxEngine.Pixel.PixelType;
 import project_1.SandboxEngine.Pixel.Special.Conway;
@@ -25,8 +26,10 @@ public class CellularAutomata {
 
     private int total_pixels;
 
-    private final double SQUARE_SIZE = 10.0;
+    private double SQUARE_SIZE;
+    private int grid_offset = 100;
 
+    
     private CellularAutomata(){
     }
 
@@ -39,8 +42,13 @@ public class CellularAutomata {
     }
 
     public void init(){
-        CellularAutomata.get().total_width = (int)((SceneManager.get_width() - 660)/CellularAutomata.get().SQUARE_SIZE);
-        CellularAutomata.get().total_height = (int)((SceneManager.get_height() - 400)/CellularAutomata.get().SQUARE_SIZE);
+        SQUARE_SIZE = SceneManager.get_height()*0.75*0.01;
+
+        CellularAutomata.get().total_width =  100;//(int)((SceneManager.get_width()*0.75)/CellularAutomata.get().SQUARE_SIZE);
+        CellularAutomata.get().total_height = 100;//(int)((SceneManager.get_height()*0.75)/CellularAutomata.get().SQUARE_SIZE);
+
+        // CellularAutomata.get().total_width = (int)((SceneManager.get_width() - 660)/CellularAutomata.get().SQUARE_SIZE);
+        // CellularAutomata.get().total_height = (int)((SceneManager.get_height() - 400)/CellularAutomata.get().SQUARE_SIZE);
         System.out.println(total_width);
         System.out.println(total_height);
         CellularAutomata.get().total_pixels = CellularAutomata.get().total_height*CellularAutomata.get().total_width;
@@ -59,6 +67,7 @@ public class CellularAutomata {
     }
 
     public void update(){
+        SQUARE_SIZE = SceneManager.get_height()*0.75*0.01;
         // System.out.println("Cellular Automata Update call");
         CellularAutomata.get().empty_buff_grid();
         Conway.increment_counter();
@@ -84,9 +93,10 @@ public class CellularAutomata {
     }
 
     public void draw(){
-        for(int col=0; col<total_width; ++col){
-            for(int row=0; row<total_height; ++row){
+        for(int col=0; col<CellularAutomata.get().total_width; ++col){
+            for(int row=0; row<CellularAutomata.get().total_width; ++row){
                 if(CellularAutomata.get().buffer_grid[col][row] != null){
+
                     CellularAutomata.get().buffer_grid[col][row].draw();
                 }
                 CellularAutomata.get().current_grid[col][row] = CellularAutomata.get().buffer_grid[col][row];
@@ -117,6 +127,12 @@ public class CellularAutomata {
      * @param buffer_array  True means you want to add the pixel to the buffered array. False means you want to add the pixel to the current array.
      */
     public void add_pixel(Pixel pixel, Vector2d position, boolean buffer_array){
+        // System.out.println("MOUSE: "+position.x+", "+position.y);
+        // if(position.x <=100 && position.y <= 100) {
+        // }
+        // position.x *= SQUARE_SIZE;
+        // position.y *= SQUARE_SIZE;
+        
         if(buffer_array){
             CellularAutomata.get().buffer_grid[(int)position.x][(int)position.y] = pixel;
         }
@@ -214,10 +230,6 @@ public class CellularAutomata {
     //     }
     // }
 
-    
-
-
-
     //------------------------------------------------------------------------------------------
     //Getter functions
     //------------------------------------------------------------------------------------------
@@ -232,6 +244,10 @@ public class CellularAutomata {
 
     public int get_total_pixels(){
         return CellularAutomata.get().total_pixels;
+    }
+
+    public double get_square_size() {
+        return SQUARE_SIZE;
     }
 
     public Pixel get_pixel(Vector2d position, boolean buffer_array){

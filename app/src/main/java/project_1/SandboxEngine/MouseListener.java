@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 import org.joml.Vector2d;
 
+import project_1.SandboxEngine.Scene.CellularAutomata;
 import project_1.SandboxEngine.Scene.SceneManager;
 
 /**
@@ -51,6 +52,7 @@ public class MouseListener {
     public static void mousePosCallback(long window, double xpos, double ypos){
         MouseListener.get().lastX = MouseListener.get().xPos;
         MouseListener.get().lastY = MouseListener.get().yPos;
+        // System.out.println(xpos+" "+ypos);
 
         //Update the new positions
         MouseListener.get().xPos = xpos;
@@ -151,8 +153,8 @@ public class MouseListener {
      * @return  Vector2D
      */
     public static Vector2d mouse_loc_in_screen(){
-        double new_x = Math.floor(MouseListener.getX()/SceneManager.get_square_size());
-        double new_y = Math.floor(MouseListener.getY()/SceneManager.get_square_size());
+        double new_x = Math.floor(MouseListener.getX()/CellularAutomata.get().get_square_size());
+        double new_y = Math.floor(MouseListener.getY()/CellularAutomata.get().get_square_size());
 
         return new Vector2d(new_x,new_y);
     }

@@ -13,8 +13,9 @@ import java.lang.reflect.Field;
 public class App {
     static {
         try {
+            
             // Set the java.library.path to the directory containing the DLL
-            System.setProperty("java.library.path", "C:\\Users\\james\\Downloads\\opencv\\build\\java\\x64");
+            System.setProperty("java.library.path", "native");
 
             // Update the system paths
             Field sysPathsField = ClassLoader.class.getDeclaredField("sys_paths");
@@ -22,8 +23,15 @@ public class App {
             sysPathsField.set(null, null);
 
             // Load the OpenCV library
-            // System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-            System.loadLibrary("opencv_java340");
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                System.loadLibrary("opencv_java342");
+            } else {
+                System.out.println("This app is not avialable on this operating system.");
+                throw new Exception();
+            }
+
+            System.loadLibrary("opencv_java342");
             System.out.println("NATIVE IMPORTED!!");
         } catch (Exception e) {
             throw new RuntimeException("Failed to load opencv native library", e);

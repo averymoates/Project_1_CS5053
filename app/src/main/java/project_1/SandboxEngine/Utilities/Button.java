@@ -41,7 +41,7 @@ public class Button {
      * @color shading ontop the image, Color.White does not effect the image
      */
     public Button(float x, float y, float width, float height, String filePath, Color color) {
-        this.x = x;
+        this.x = x; // 0-1
         this.y = y;
         this.width = width;
         this.height = height;
@@ -77,7 +77,12 @@ public class Button {
     }
 
     /** continually call this function to draw the current state of the button */
-    public void render() {
+    public void render(float x, float y, float width, float height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
         // outline button
         glColor3f(0f, 0f, 0f);
 

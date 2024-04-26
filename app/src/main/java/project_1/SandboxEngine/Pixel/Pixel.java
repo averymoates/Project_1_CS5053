@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.glLineWidth;
 
 import org.joml.Vector2d;
 
+import javafx.scene.control.Cell;
 import project_1.SandboxEngine.Scene.CellularAutomata;
 import project_1.SandboxEngine.Scene.SceneManager;
 import project_1.SandboxEngine.Utilities.ColorPicker;
@@ -24,7 +25,7 @@ abstract public class Pixel {
     protected float blue;
 
     //Size of each of the squares
-    protected double square_size = SceneManager.get_square_size();
+    protected double square_size = 0;
 
     //A way to identify each of the different pixels
     protected PixelType name;
@@ -102,10 +103,14 @@ abstract public class Pixel {
     //------------------------------------------------------------------------------------------
     public void draw(){
         glColor3f(this.get_r(), this.get_g(), this.get_b());
+        // System.out.println(this.get_r()+" "+this.get_g()+" "+this.get_b());
+        this.square_size = CellularAutomata.get().get_square_size();
         ShapeMaker.fill_square(this.position.x*this.get_sqaure_size(), this.position.y*this.get_sqaure_size(), this.get_sqaure_size());
     }
 
     public void update(){
+        // System.out.println("MOUSE "+position.y+", "+position.y);
+        this.square_size = CellularAutomata.get().get_square_size();
         CellularAutomata.get().add_pixel(this, this.position, true);
     }
 }

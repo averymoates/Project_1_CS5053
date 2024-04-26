@@ -73,8 +73,8 @@ public class EdgeDetector {
 
     public void init() {
         
-        EdgeDetector.get().total_width = (int)(SceneManager.get_width()/SQUARE_SIZE) - 2;
-        EdgeDetector.get().total_height = (int)(SceneManager.get_height()/SQUARE_SIZE) - 8;
+        EdgeDetector.get().total_width = 100; //(int)(SceneManager.get_width()/SQUARE_SIZE) - 2;
+        EdgeDetector.get().total_height = 100; //(int)(SceneManager.get_height()/SQUARE_SIZE) - 8;
         EdgeDetector.get().thresh1 = 100;
         EdgeDetector.get().thresh2 = 200;
 
@@ -126,7 +126,8 @@ public class EdgeDetector {
 
     /** detects edges on the current image and adds them as pixels to the CellularAutomata grid */
     public void addEdgePixels(Mat image) {
-
+        // EdgeDetector.get().total_width = (int)(SceneManager.get_width()/SQUARE_SIZE) - 2;
+        // EdgeDetector.get().total_height = (int)(SceneManager.get_height()/SQUARE_SIZE) - 8;
         EdgeDetector.get().edgeOutput = detectImage(image);
         // System.out.println("OUTPUT ROWS: "+edgeOutput.rows()+" OUTPUT COLS: "+edgeOutput.cols());
         // Copy edges to Pixel array
@@ -220,6 +221,7 @@ public class EdgeDetector {
         if (thresh1 > thresh2) {
             thresh1 = thresh2;
         }
+        EdgeDetector.get().setImage(EdgeDetector.get().getImageIdx());
         System.out.println("EDGE THRESHOLDS: (" + thresh1 + ", " + thresh2 + ")");
     }
 
