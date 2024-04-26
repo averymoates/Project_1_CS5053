@@ -31,7 +31,7 @@ public class App {
                 throw new Exception();
             }
 
-            System.loadLibrary("opencv_java342");
+            // System.loadLibrary("opencv_java342");
             System.out.println("NATIVE IMPORTED!!");
         } catch (Exception e) {
             throw new RuntimeException("Failed to load opencv native library", e);

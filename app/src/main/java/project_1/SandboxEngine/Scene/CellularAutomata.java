@@ -184,27 +184,20 @@ public class CellularAutomata {
     //  * Converts all of the sand pixels (only enum type implemented currently) to game of life pixels to run the simulation on them.
     //  * Activates when the user clicks the letter 'C', can be found in SceneManager.
     //  */
-    // public void convertToGameOfLife() {
-    //     System.out.println("called 2");
-    //     for (int x = 0; x < get_width(); x++) {
-    //         for (int y = 0; y < get_height(); y++) {
-    //             Pixel p = current_grid[x][y];
-    //             if (p != null && (p instanceof Sand_pixel || p instanceof Conway)) {
-    //                 boolean isAlive = true;
-    //                 buffer_grid[x][y] = new Conway(PixelType.CONWAY, p.get_ID(), new Vector2d(x, y), isAlive);
-    //                 buffer_grid[x][y].set_pixel_color(255, 0, 0); 
-    //                 System.out.println(current_grid[x][y]);
-    //             } else if (p != null) {
-    //                 // Copy non-Sand pixels as they are
-    //                 buffer_grid[x][y] = p;
-    //             } else {
-    //                 buffer_grid[x][y] = null;
-    //             }
-    //         }
-    //     }
-    //     // After conversion, you might want to swap grids or copy back as needed
-    //     draw();  // This needs to handle buffer properly
-    // }
+    public void convertToGameOfLife() {
+        System.out.println("called 2");
+
+        for(int col=0; col<CellularAutomata.get().total_width; ++col){
+            for(int row=0; row<CellularAutomata.get().total_height; ++row){
+                Pixel p = CellularAutomata.get().current_grid[col][row];
+                if(p != null && p.get_ID() == 0){
+                    p = new Conway(new Vector2d(col, row), true);
+                    p.set_pixel_color(255, 0, 0); 
+                    CellularAutomata.get().add_pixel(p, p.get_position(), false);
+                }
+            }
+        }
+    }
     
 
     // /*

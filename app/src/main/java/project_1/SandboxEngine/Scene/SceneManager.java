@@ -395,6 +395,7 @@ public class SceneManager {
                 // shade this button and unshade other pixel button types
                 simulate.selected(true);
                 System.out.println("SIMULATING");
+                CellularAutomata.get().convertToGameOfLife();
                 Conway.toggle_animation();
             }
             // else {

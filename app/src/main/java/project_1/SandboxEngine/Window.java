@@ -95,11 +95,6 @@ public class Window {
         init();
         loop();
 
-        // Free the window callbacks and destroy the window
-        if (windowSizeCallback != null) {
-            windowSizeCallback.free();
-        }
-
         //Free the memory
         glfwFreeCallbacks(this.glfwWindow);
         glfwDestroyWindow(this.glfwWindow);
@@ -132,32 +127,26 @@ public class Window {
             throw new IllegalStateException("Failed to create GLFW Window.");
         }
 
-         // Configure GLFW to be resizable
-         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        // Configure GLFW to be resizable
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-         // Create the GLFW window
-         this.glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
-         if (this.glfwWindow == NULL) {
-             throw new RuntimeException("Failed to create the GLFW window");
-         }
- 
-         // Create a window resize callback
-         windowSizeCallback = new GLFWWindowSizeCallback() {
-             @Override
-             public void invoke(long window, int width, int height) {
-                 // Decide the new size for the window
-                 int newSize = Math.min(width, height);
- 
-                 // Update the GLFW window
-                 glfwSetWindowSize(window, newSize, newSize);
- 
-                 // Update the OpenGL viewport
-                 glViewport(0, 0, newSize, newSize);
-             }
-         };
- 
-         // Set the resize callback
-         glfwSetWindowSizeCallback(this.glfwWindow, windowSizeCallback);
+        // Create a window resize callback
+        windowSizeCallback = new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                // Decide the new size for the window
+                int newSize = Math.min(width, height);
+
+                // Update the GLFW window
+                glfwSetWindowSize(window, newSize, newSize);
+
+                // Update the OpenGL viewport
+                glViewport(0, 0, newSize, newSize);
+            }
+        };
+
+        // Set the resize callback
+        glfwSetWindowSizeCallback(this.glfwWindow, windowSizeCallback);
 
 
 
