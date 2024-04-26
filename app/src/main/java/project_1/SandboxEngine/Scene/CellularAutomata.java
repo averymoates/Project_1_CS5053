@@ -39,8 +39,10 @@ public class CellularAutomata {
     }
 
     public void init(){
-        CellularAutomata.get().total_width = (int)(SceneManager.get_width()/CellularAutomata.get().SQUARE_SIZE) - 2;
-        CellularAutomata.get().total_height = (int)(SceneManager.get_height()/CellularAutomata.get().SQUARE_SIZE) - 8;
+        CellularAutomata.get().total_width = (int)((SceneManager.get_width() - 660)/CellularAutomata.get().SQUARE_SIZE);
+        CellularAutomata.get().total_height = (int)((SceneManager.get_height() - 400)/CellularAutomata.get().SQUARE_SIZE);
+        System.out.println(total_width);
+        System.out.println(total_height);
         CellularAutomata.get().total_pixels = CellularAutomata.get().total_height*CellularAutomata.get().total_width;
         CellularAutomata.get().current_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
         CellularAutomata.get().buffer_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];

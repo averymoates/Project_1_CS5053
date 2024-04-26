@@ -51,7 +51,7 @@ public class SceneManager {
     private long end_time;
     private int frame_counter;
 
-    private int redY=425, greenY=425, blueY=425;
+    private int redY=300, greenY=300, blueY=300;
 
     private SceneManager(){
         this.pixel_selector = 0;
@@ -72,17 +72,17 @@ public class SceneManager {
         CellularAutomata.get().init();
         EdgeDetector.get().init();
 
-        sandButton = new Button(100f, 1100f, 300f, 100f, "images\\buttons\\sand.png", Color.ORANGE);
-        waterButton = new Button(450f, 1100f, 300f, 100f, "images\\buttons\\water.png", Color.BLUE);
-        blankButton = new Button(800f, 1100f, 300f, 100f, "images\\buttons\\solid.png", Color.GRAY);
-        leftArrow = new Button(1200f, 1100f, 150f, 75f, "images\\buttons\\left_arrow.png", Color.WHITE);
-        rightArrow = new Button(1400f, 1100f, 150f, 75f, "images\\buttons\\right_arrow.png", Color.WHITE);
-        image = new Button(1225f, 1200f, 300f, 85f, "images\\buttons\\image.png", Color.WHITE);
-        simulate = new Button(1625f, 1100f, 300f, 100f, "images\\buttons\\simulate.png", Color.green);
-        clear = new Button(2000f, 100f, 300f, 85f, "images\\buttons\\clear.png", Color.WHITE);
-        redButton = new Button(2025f, (float)redY, 50f, 50f, "", Color.RED);
-        greenButton = new Button(2125f, (float)greenY, 50f, 50f, "", Color.GREEN);
-        blueButton = new Button(2225f, (float)blueY, 50f, 50f, "", Color.BLUE);
+        sandButton = new Button(100f, height - 250, 300f, 100f, "images\\buttons\\sand.png", Color.ORANGE);
+        waterButton = new Button(450f, height - 250, 300f, 100f, "images\\buttons\\water.png", Color.BLUE);
+        blankButton = new Button(800f, height - 250, 300f, 100f, "images\\buttons\\solid.png", Color.GRAY);
+        leftArrow = new Button(1200f, height - 300, 150f, 75f, "images\\buttons\\left_arrow.png", Color.WHITE);
+        rightArrow = new Button(1400f, height - 300, 150f, 75f, "images\\buttons\\right_arrow.png", Color.WHITE);
+        image = new Button(1225f, height - 200, 300f, 85f, "images\\buttons\\image.png", Color.WHITE);
+        simulate = new Button(1625f, height - 250, 300f, 100f, "images\\buttons\\simulate.png", Color.green);
+        clear = new Button(width - 560, 25, 300f, 85f, "images\\buttons\\clear.png", Color.WHITE);
+        redButton = new Button(width - 535, (float)redY, 50f, 50f, "", Color.RED);
+        greenButton = new Button(width - 435, (float)greenY, 50f, 50f, "", Color.GREEN);
+        blueButton = new Button(width - 335, (float)blueY, 50f, 50f, "", Color.BLUE);
         
 
         showImage = new Button(2000f, 1000, 300f, 205f, "images\\aaablank.png", Color.WHITE);
@@ -109,9 +109,9 @@ public class SceneManager {
         glColor3f(1f,1f,1f);
         glBegin(GL_POLYGON);
             glVertex2f(0, 0);
-            glVertex2f(1900f, 0);
-            glVertex2f(1900f, 1000f);
-            glVertex2f(0, 1000f);
+            glVertex2f(width - 655, 0);
+            glVertex2f(width - 655, height - 335);
+            glVertex2f(0, height - 335);
         glEnd();
 
         // outline sandbox environment
@@ -119,9 +119,9 @@ public class SceneManager {
         glLineWidth(5.0f);
         glBegin(GL_LINE_LOOP);
             glVertex2f(0, 0);
-            glVertex2f(1900f, 0);
-            glVertex2f(1900f, 1000f);
-            glVertex2f(0, 1000f);
+            glVertex2f(width - 655, 0);
+            glVertex2f(width - 655, height - 335);
+            glVertex2f(0, height - 335);
         glEnd();
 
         /******* COLOR SLIDER ********/
@@ -129,39 +129,39 @@ public class SceneManager {
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINES);
-            glVertex2f(2050f, 250f);
-            glVertex2f(2050f, 625f);
+            glVertex2f(width - 510, 150f);
+            glVertex2f(width - 510, 525f);
         glEnd();
 
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINES);
-            glVertex2f(2150f, 250f);
-            glVertex2f(2150f, 625f);
+            glVertex2f(width - 410, 150f);
+            glVertex2f(width - 410, 525f);
         glEnd();
 
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINES);
-            glVertex2f(2250f, 250f);
-            glVertex2f(2250f, 625f);
+            glVertex2f(width - 310, 150f);
+            glVertex2f(width - 310, 525f);
         glEnd();
 
         // display current color of sliders
-        glColor3f(1.0f-(redY-250)/(400f),1.0f-(greenY-250)/(400f),1.0f-(blueY-250)/(400f));
+        glColor3f(1.0f-(redY-250)/(300f),1.0f-(greenY-250)/(300f),1.0f-(blueY-250)/(300f));
         glBegin(GL_POLYGON);
-            glVertex2f(2050f, 700f);
-            glVertex2f(2250f, 700f);
-            glVertex2f(2250f, 900f);
-            glVertex2f(2050f, 900f);
+            glVertex2f(width - 510, 550f);
+            glVertex2f(width - 310, 550f);
+            glVertex2f(width - 310, 750f);
+            glVertex2f(width - 510, 750f);
         glEnd();
         glColor3f(0f,0f,0f);
         glLineWidth(5.0f);
         glBegin(GL_LINE_LOOP);
-            glVertex2f(2050f, 700f);
-            glVertex2f(2250f, 700f);
-            glVertex2f(2250f, 900f);
-            glVertex2f(2050f, 900f);
+            glVertex2f(width - 510, 550f);
+            glVertex2f(width - 310, 550f);
+            glVertex2f(width - 310, 750f);
+            glVertex2f(width - 510, 750f);
         glEnd();
 
         CellularAutomata.get().draw();
@@ -221,19 +221,19 @@ public class SceneManager {
         }
         else if(KeyListener.isKeyPressed(GLFW_KEY_UP)) { // move selected slider UP
             if(redButton.isSelected()) {
-                if (redY-1 > 225) {
+                if (redY-1 > 125) {
                     redY -= 1;
                     redButton.translate(0, -1);
                 }
             }
             if(greenButton.isSelected()) {
-                if (greenY-1 > 225) {
+                if (greenY-1 > 125) {
                     greenY -= 1;
                     greenButton.translate(0, -1);
                 }
             }
             if(blueButton.isSelected()) {
-                if (blueY-1 > 250) {
+                if (blueY-1 > 125) {
                     blueY -= 1;
                     blueButton.translate(0, -1);
                 }
@@ -241,19 +241,19 @@ public class SceneManager {
         }
         else if(KeyListener.isKeyPressed(GLFW_KEY_DOWN)) { // move selected slider DOWN
             if(redButton.isSelected()) {
-                if (redY+1 < 600) {
+                if (redY+1 < 500) {
                     redY += 1;
                     redButton.translate(0, 1);
                 }
             }
             if(greenButton.isSelected()) {
-                if (greenY+1 < 600) {
+                if (greenY+1 < 500) {
                     greenY += 1;
                     greenButton.translate(0, 1);
                 }
             }
             if(blueButton.isSelected()) {
-                if (blueY+1 < 600) {
+                if (blueY+1 < 500) {
                     blueY 
                     += 1;
                     blueButton.translate(0, 1);
@@ -378,6 +378,7 @@ public class SceneManager {
                 // shade this button and unshade other pixel button types
                 simulate.selected(true);
                 System.out.println("SIMULATING");
+                Conway.toggle_animation();
             }
             // else {
             //     SceneManager.get().fallingEdge = false;
@@ -433,7 +434,6 @@ public class SceneManager {
                 //                     (int)(1.0f-(greenY-250)/(400f))*256,
                 //                     (int)(1.0f-(blueY-250)/(400f))*256);
                 return pixel;
-                return new Water_pixel(position);
             case 3:
                 return new Conway(position, true);
         
