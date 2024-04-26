@@ -85,7 +85,7 @@ public class SceneManager {
         blueButton = new Button(width - 335, (float)blueY, 50f, 50f, "", Color.BLUE);
         
 
-        showImage = new Button(2000f, 1000, 300f, 205f, "images\\aaablank.png", Color.WHITE);
+        showImage = new Button(1625f, 550f, 300f, 205f, "images\\aaablank.png", Color.WHITE);
 
         blankButton.selected(true);
     }
@@ -378,6 +378,7 @@ public class SceneManager {
                 // shade this button and unshade other pixel button types
                 simulate.selected(true);
                 System.out.println("SIMULATING");
+                Conway.setModeSelector(1);
                 Conway.toggle_animation();
             }
             // else {

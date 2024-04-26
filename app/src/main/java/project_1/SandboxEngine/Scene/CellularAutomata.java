@@ -27,6 +27,9 @@ public class CellularAutomata {
 
     private final double SQUARE_SIZE = 10.0;
 
+    private Vector2d ant = null;
+    private Vector2d next_ant;
+
     private CellularAutomata(){
     }
 
@@ -69,10 +72,10 @@ public class CellularAutomata {
                     continue;
                 }
                 //When the conway game of life is being animated, it need to now check all the empty pixel spaces
-                if(Conway.is_animating()){
+                if(Conway.is_animating() && Conway.getModeSelector() == 0){
                     if(Conway.get_counter() == 0){
                         Vector2d position = new Vector2d(col,row);
-                        boolean add_conway = Conway.get_next_state(position, null);
+                        boolean add_conway = Conway.applyGameofLifeRules(position, null);
                         if(add_conway == true){
                             Conway new_conway = new Conway(position, true);
                             CellularAutomata.get().add_pixel(new_conway, position, true);
@@ -80,6 +83,31 @@ public class CellularAutomata {
                     }
                 }
             }
+        }
+
+        if(Conway.is_animating() && Conway.getModeSelector() == 1){
+            //First Iteration, pick a random point, we will just select one near the center for now.
+            //Gets next position for the ant, and the next_ant
+            if(ant == null){
+                ant = new Vector2d(CellularAutomata.get().total_width / 2, CellularAutomata.get().total_height / 2);
+                System.out.println(ant);
+                next_ant = new Vector2d(Conway.applyLangstonAntRules(ant));
+                System.out.println(next_ant);
+            } else{
+                ant = next_ant;
+                next_ant = new Vector2d(Conway.applyLangstonAntRules(ant));
+            }
+
+            // Can handle any type of cell, essentially eating away and reforming the grid, 
+            // If there is an empty cell that needs to be filled in, use a Conway cell, if a cell needs to be flipped, remove the cell from the grid.
+            if(CellularAutomata.get().pos_empty(ant, false)){
+                CellularAutomata.get().add_pixel(new Conway(ant, true), ant, true);
+                System.out.print("This ant was empty");
+            } else{
+                CellularAutomata.get().remove_pixel(ant);
+                                System.out.print("This ant wasnt empty");
+            }
+            System.out.println(next_ant);
         }
     }
 
@@ -133,7 +161,7 @@ public class CellularAutomata {
      * Function to check if a pixel at certain position is null
      * 
      * @param position
-     * @return
+     * @return true/false
      */
     public boolean pos_empty(Vector2d position, boolean buffer_array){
         if(buffer_array){

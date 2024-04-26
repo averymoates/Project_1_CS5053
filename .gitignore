@@ -5,3 +5,7 @@
 build
 
 .vscode
+
+app/output.png
+
+app/src/main/java/project_1/App.java
