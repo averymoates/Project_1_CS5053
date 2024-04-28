@@ -101,7 +101,7 @@ public class SceneManager {
         blueButton = new Button(width*0.9f, blueY*colorYRange+colorYStart, width*0.02f, width*0.02f, "", Color.BLUE);
         
 
-        showImage = new Button(width*0.785f, height*0.62f, width*0.15f, height*0.15f, "images\\aaablank.png", Color.WHITE);
+        showImage = new Button(width*0.785f, height*0.62f, width*0.15f, height*0.15f, "images\\0blank.png", Color.WHITE);
 
         blankButton.selected(true);
     }
