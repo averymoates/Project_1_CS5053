@@ -446,7 +446,7 @@ public class SceneManager {
             else if (simulate.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
                 SceneManager.get().fallingEdge = true;
                 // shade this button and unshade other pixel button types
-                simulate.selected(true);
+                simulate.selected(!simulate.isSelected());
                 System.out.println("SIMULATING");
                 // CellularAutomata.get().convertToGameOfLife();
                 Conway.toggle_animation();
@@ -473,7 +473,7 @@ public class SceneManager {
             rightArrow.selected(false);
             // eraser.selected(false);
             image.selected(false);
-            simulate.selected(false);
+            // simulate.selected(false);
         }
     }
 
