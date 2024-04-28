@@ -36,7 +36,10 @@ public class SceneManager {
 
     private static SceneManager instance = null;
 
-    private static Button sandButton, waterButton, blankButton, leftArrow, rightArrow, image, clear, redButton, greenButton, blueButton, simulate;
+    private static Button sandButton, waterButton, blankButton, 
+                            leftArrow, rightArrow, image, eraser, 
+                            redButton, greenButton, blueButton, simulate,
+                            conway, langton;
     public Button showImage;
 
     //Change this value to change the size of all the pixels
@@ -81,20 +84,24 @@ public class SceneManager {
         colorYStart=0.15f*height;
         SQUARE_SIZE = SceneManager.get_height()*0.75*0.01;
 
-        sandButton = new Button(100f, height - 250, 300f, 100f, "images\\buttons\\sand.png", Color.ORANGE);
-        waterButton = new Button(450f, height - 250, 300f, 100f, "images\\buttons\\water.png", Color.BLUE);
-        blankButton = new Button(800f, height - 250, 300f, 100f, "images\\buttons\\solid.png", Color.GRAY);
-        leftArrow = new Button(1200f, height - 300, 150f, 75f, "images\\buttons\\left_arrow.png", Color.WHITE);
-        rightArrow = new Button(1400f, height - 300, 150f, 75f, "images\\buttons\\right_arrow.png", Color.WHITE);
-        image = new Button(1225f, height - 200, 300f, 85f, "images\\buttons\\image.png", Color.WHITE);
-        simulate = new Button(1625f, height - 250, 300f, 100f, "images\\buttons\\simulate.png", Color.green);
-        clear = new Button(width - 560, 25, 300f, 85f, "images\\buttons\\clear.png", Color.WHITE);
-        redButton = new Button(width - 535, redY*colorYRange+colorYStart, 50f, 50f, "", Color.RED);
-        greenButton = new Button(width - 435, greenY*colorYRange+colorYStart, 50f, 50f, "", Color.GREEN);
-        blueButton = new Button(width - 335, blueY*colorYRange+colorYStart, 50f, 50f, "", Color.BLUE);
+        sandButton = new Button(width*0.01f, height*0.8f, width*0.2f, height*0.07f, "images\\buttons\\sand.png", Color.ORANGE);
+        waterButton = new Button(width*0.26f, height*0.8f, width*0.2f, height*0.07f, "images\\buttons\\water.png", Color.BLUE);
+        blankButton = new Button(width*0.51f, height*0.8f, width*0.2f, height*0.07f, "images\\buttons\\solid.png", Color.GRAY);
+        leftArrow = new Button(width*0.75f, height*0.8f, width*0.1f, height*0.07f, "images\\buttons\\left_arrow.png", Color.WHITE);
+        rightArrow = new Button(width*0.88f, height*0.8f, width*0.1f, height*0.07f, "images\\buttons\\right_arrow.png", Color.WHITE);
+
+        conway = new Button(width*0.01f, height*0.9f, width*0.2f, height*0.07f, "images\\buttons\\conway.png", Color.MAGENTA);
+        langton = new Button(width*0.51f, height*0.9f, width*0.2f, height*0.07f, "images\\buttons\\langton.png", Color.RED);
+
+        image = new Button(width*0.76f, height*0.9f, width*0.2f, height*0.07f, "images\\buttons\\convertimage.png", Color.WHITE);
+        simulate = new Button(width*0.26f, height*0.9f, width*0.2f, height*0.07f, "images\\buttons\\simulate.png", Color.green);
+        eraser = new Button(width*0.77f, height*0.05f, width*0.2f, height*0.07f, "images\\buttons\\eraser.png", Color.WHITE);
+        redButton = new Button(width*0.8f, redY*colorYRange+colorYStart, width*0.02f, width*0.02f, "", Color.RED);
+        greenButton = new Button(width*0.85f, greenY*colorYRange+colorYStart, width*0.02f, width*0.02f, "", Color.GREEN);
+        blueButton = new Button(width*0.9f, blueY*colorYRange+colorYStart, width*0.02f, width*0.02f, "", Color.BLUE);
         
 
-        showImage = new Button(1625f, 550f, 300f, 205f, "images\\aaablank.png", Color.WHITE);
+        showImage = new Button(width*0.785f, height*0.62f, width*0.15f, height*0.15f, "images\\aaablank.png", Color.WHITE);
 
         blankButton.selected(true);
     }
@@ -185,11 +192,13 @@ public class SceneManager {
 
         leftArrow.render(width*0.75f, height*0.8f, width*0.1f, height*0.07f);
         rightArrow.render(width*0.88f, height*0.8f, width*0.1f, height*0.07f);
-        image.render(width*0.76f, height*0.9f, width*0.2f, height*0.07f);
+        image.render(width*0.74f, height*0.9f, width*0.25f, height*0.07f);
 
+        conway.render(width*0.01f, height*0.9f, width*0.2f, height*0.07f);
         simulate.render(width*0.26f, height*0.9f, width*0.2f, height*0.07f);
+        langton.render(width*0.51f, height*0.9f, width*0.2f, height*0.07f);
 
-        clear.render(width*0.77f, height*0.05f, width*0.2f, height*0.07f);
+        eraser.render(width*0.77f, height*0.05f, width*0.2f, height*0.07f);
 
         colorYRange=0.3f*height;
         colorYStart=0.15f*height;
@@ -314,6 +323,9 @@ public class SceneManager {
                 blankButton.selected(true);
                 sandButton.selected(false);
                 waterButton.selected(false);
+                conway.selected(false);
+                langton.selected(false);
+                eraser.selected(false);
                 System.out.println("SOLID SELECTED");
             }
             else if (sandButton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
@@ -323,6 +335,9 @@ public class SceneManager {
                 blankButton.selected(false);
                 sandButton.selected(true);
                 waterButton.selected(false);
+                conway.selected(false);
+                langton.selected(false);
+                eraser.selected(false);
                 System.out.println("SAND SELECTED");
             }
             else if (waterButton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
@@ -332,7 +347,46 @@ public class SceneManager {
                 blankButton.selected(false);
                 sandButton.selected(false);
                 waterButton.selected(true);
-                System.out.println("WATER");
+                conway.selected(false);
+                langton.selected(false);
+                eraser.selected(false);
+                System.out.println("WATER SELECTED");
+            }
+            else if (conway.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
+                SceneManager.get().fallingEdge = true;
+                SceneManager.get().pixel_selector = 3;
+                // shade this button and unshade other pixel button types
+                blankButton.selected(false);
+                sandButton.selected(false);
+                waterButton.selected(false);
+                conway.selected(true);
+                langton.selected(false);
+                eraser.selected(false);
+                System.out.println("CONWAY PIXEL");
+            }
+            else if (langton.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
+                SceneManager.get().fallingEdge = true;
+                SceneManager.get().pixel_selector = 4;
+                // shade this button and unshade other pixel button types
+                blankButton.selected(false);
+                sandButton.selected(false);
+                waterButton.selected(false);
+                conway.selected(false);
+                langton.selected(true);
+                eraser.selected(false);
+                System.out.println("LANGTON PIXEL");
+            }
+            /*** ERASER BUTTON ****/
+            else if (eraser.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
+                SceneManager.get().fallingEdge = true;
+                // shade this button and unshade other pixel button types
+                blankButton.selected(false);
+                sandButton.selected(false);
+                waterButton.selected(false);
+                conway.selected(false);
+                langton.selected(false);
+                eraser.selected(true);
+                System.out.println("SANDBOX eraserED");
             }
 
             /******** EDGE DETECTION IMAGE BUTTONS **********/
@@ -378,18 +432,12 @@ public class SceneManager {
             }
 
 
-            /*** CLEAR BUTTON ****/
-            else if (clear.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
-                SceneManager.get().fallingEdge = true;
-                CellularAutomata.get().empty_curr_grid();
-                // shade this button and unshade other pixel button types
-                clear.selected(true);
-                System.out.println("SANDBOX CLEARED");
-            }
-            /***** RANDOM POINTS *******/
+            
+            /***** CONVERT EDGE IMAGE TO PIXEL *******/
             else if (image.clicked((float)MouseListener.getX(), (float)MouseListener.getY()) && !SceneManager.get().fallingEdge){
                 SceneManager.get().fallingEdge = true;
-                EdgeDetector.placeRandomPixels();
+                CellularAutomata.get().convertToGameOfLife(SceneManager.get().pixel_selector);
+                // EdgeDetector.convertToGameOfLife(SceneManager.get().pixel_selector);
                 // shade this button and unshade other pixel button types
                 image.selected(true);
                 System.out.println("RANDOMNESSSSSS");
@@ -400,31 +448,30 @@ public class SceneManager {
                 // shade this button and unshade other pixel button types
                 simulate.selected(true);
                 System.out.println("SIMULATING");
-                CellularAutomata.get().convertToGameOfLife();
+                // CellularAutomata.get().convertToGameOfLife();
                 Conway.toggle_animation();
             }
-            // else {
-            //     SceneManager.get().fallingEdge = false;
-            // }
+
 
             if(CellularAutomata.get().pos_allowed(position)){
                 // System.out.println("MOUSE: "+position.x+", "+position.y);
-                if(CellularAutomata.get().pos_empty(position, false)){
+                // eraser
+                if (eraser.isSelected()) {
+                    CellularAutomata.get().remove_pixel(position, false);
+                }
+                // add pixel if eraser not selected
+                else if(CellularAutomata.get().pos_empty(position, false)){
                     CellularAutomata.get().add_pixel(SceneManager.get().create_selected_pixel(position), position, false);
                 }
+
             }
-            // // Automata Selector 
-            // if (SceneManager.get().getGameOfLifeMode()){
-            //     CellularAutomata.get().togglePixelState(position);
-            // } else {
-                
-            // }
+
         }
         else {
             SceneManager.get().fallingEdge = false;
             leftArrow.selected(false);
             rightArrow.selected(false);
-            clear.selected(false);
+            // eraser.selected(false);
             image.selected(false);
             simulate.selected(false);
         }

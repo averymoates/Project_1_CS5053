@@ -5,11 +5,13 @@ import org.joml.Vector2d;
 import javafx.css.SimpleStyleableDoubleProperty;
 import project_1.SandboxEngine.Pixel.Pixel;
 import project_1.SandboxEngine.Pixel.PixelType;
+import project_1.SandboxEngine.Pixel.Special.Blank_pixel;
 import project_1.SandboxEngine.Pixel.Special.Conway;
 import project_1.SandboxEngine.Pixel.Special.Langston;
 import project_1.SandboxEngine.Pixel.Special.Special;
 import project_1.SandboxEngine.Pixel.Element.Element;
 import project_1.SandboxEngine.Pixel.Element.Solid.Sand_pixel;
+import project_1.SandboxEngine.Pixel.Element.Liquid.Water_pixel;
 
 public class CellularAutomata {
 
@@ -228,15 +230,35 @@ public class CellularAutomata {
     //  * Converts all of the sand pixels (only enum type implemented currently) to game of life pixels to run the simulation on them.
     //  * Activates when the user clicks the letter 'C', can be found in SceneManager.
     //  */
-    public void convertToGameOfLife() {
+    public void convertToGameOfLife(int type) {
         System.out.println("called 2");
 
         for(int col=0; col<CellularAutomata.get().total_width; ++col){
             for(int row=0; row<CellularAutomata.get().total_height; ++row){
                 Pixel p = CellularAutomata.get().current_grid[col][row];
+                Vector2d position = new Vector2d(col, row);
                 if(p != null && p.get_ID() == 0){
-                    p = new Conway(new Vector2d(col, row), true);
-                    p.set_pixel_color(255, 0, 0); 
+                    // determine what pixel to draw
+                    switch (type) {
+                        case 0:
+                            p = new Blank_pixel(position);
+                            break;
+                        case 1:
+                            p = new Sand_pixel(position);
+                            break;
+                        case 2:
+                            p = new Water_pixel(position);
+                            break;
+                        case 3:
+                            p = new Conway(position, true);
+                            break;
+                        case 4:
+                            p = new Langston(position, true);
+                            break;
+                        default:
+                            p = new Blank_pixel(position);
+                            break;
+                    }
                     CellularAutomata.get().add_pixel(p, p.get_position(), false);
                 }
             }

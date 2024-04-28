@@ -84,8 +84,12 @@ public class Button {
         this.height = height;
 
         // outline button
-        glColor3f(0f, 0f, 0f);
-
+        if (this.selected) {
+            glColor3f(1f, 1f, 1f);
+        }
+        else {
+            glColor3f(0f, 0f, 0f);
+        }
         glBegin(GL_LINE_LOOP);
             glVertex2f(x, y);
             glVertex2f(x + width, y);
@@ -95,7 +99,7 @@ public class Button {
 
         // fill button (shaded darker if currently selected)
         if (this.selected) {
-            glColor3f(color.getRed()*0.8f / 255.0f, color.getGreen()*0.8f / 255.0f, color.getBlue()*0.8f / 255.0f);
+            glColor3f(color.getRed()*1.5f / 255.0f, color.getGreen()*1.5f / 255.0f, color.getBlue()*1.5f / 255.0f);
         }
         else {
             glColor3f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f);
