@@ -65,7 +65,7 @@ public class CellularAutomata {
         System.out.println("Cellular Automata Size: "+CellularAutomata.get().total_width+"X"+CellularAutomata.get().total_height);
 
         //place any functions that needs to be called once that is related to pixels
-        Element.set_counter(0);
+        Element.set_counter(1);
         
         Conway.set_animation_rate(30);
         Langston.set_animation_rate(30);
@@ -76,7 +76,8 @@ public class CellularAutomata {
         SQUARE_SIZE = SceneManager.get_height()*0.75*0.01;
         // System.out.println("Cellular Automata Update call");
         CellularAutomata.get().empty_buff_grid();
-        Conway.increment_counter();
+        Element.increment_counter();
+        Special.increment_counter();
         for(int col=0; col<CellularAutomata.get().total_width; ++col){
             for(int row=0; row<CellularAutomata.get().total_height; ++row){
                 if(CellularAutomata.get().current_grid[col][row] != null){

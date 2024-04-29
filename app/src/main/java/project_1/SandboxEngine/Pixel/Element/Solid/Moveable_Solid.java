@@ -1,16 +1,19 @@
 package project_1.SandboxEngine.Pixel.Element.Solid;
 
+import java.util.Random;
+
 import org.joml.Vector2d;
 
 import project_1.SandboxEngine.Pixel.Pixel;
+import project_1.SandboxEngine.Pixel.Element.Element;
 import project_1.SandboxEngine.Pixel.PixelType;
 import project_1.SandboxEngine.Scene.CellularAutomata;
 
 public class Moveable_Solid extends Solid {
-    private double fall_rate;
+    private int fall_rate;
     private boolean is_falling;
 
-    public Moveable_Solid(PixelType name, int id, double weight, double fall_rate, Vector2d position) {
+    public Moveable_Solid(PixelType name, int id, double weight, int fall_rate, Vector2d position) {
         super(name, id, weight, position);
         this.fall_rate = fall_rate;
         this.is_falling = true;
@@ -18,129 +21,83 @@ public class Moveable_Solid extends Solid {
 
     @Override
     public void update(){
-        if(this.time_step == fall_rate){
-            this.time_step = 0;
-            if(is_falling){
-                fall_down_solid();
-            }
-            else{
-                set_above_still();
-            }
+        if((Element.counter % this.fall_rate)==0){
+            this.fall_down_solid();
+            CellularAutomata.get().add_pixel(this, this.position, true);
         }
         else{
-            ++this.time_step;
             CellularAutomata.get().add_pixel(this, this.position, true);
         }
     }
 
-    public void force_fall(){
-        this.is_falling = true;
-        this.fall_down_solid();
-    }
-
-    public void force_still(){
-        this.is_falling = false;
-    }
-
     protected void fall_down_solid(){
-        //Check Below
-        Vector2d check = new Vector2d(this.position.x,this.position.y+1);
-        if(CellularAutomata.get().pos_allowed(check)){
-            if(CellularAutomata.get().pos_empty(check,false)){
-                this.position = check;
-                CellularAutomata.get().add_pixel(this, check, true);
-                if(this.position.y>=CellularAutomata.get().get_height()){
-                    this.force_still();
-                }
-                return;
-            }
+        Vector2d check = new Vector2d();
 
-            Pixel temp = CellularAutomata.get().get_pixel(check, false);
-            if((temp instanceof Moveable_Solid) && ((Moveable_Solid)temp).get_is_falling()){
-                this.position = check;
-                CellularAutomata.get().add_pixel(this, check, true);
-                if(this.position.y>=CellularAutomata.get().get_height()){
-                    this.force_still();
-                }
-                return;
-            }
-            else if((temp instanceof Moveable_Solid) && !((Moveable_Solid)temp).get_is_falling()){
-                Vector2d check_2 = new Vector2d(this.position.x,this.position.y+2);
-                if(CellularAutomata.get().pos_allowed(check_2) && CellularAutomata.get().pos_empty(check,false)){
-                    ((Moveable_Solid) temp).force_fall();
-                }
-            }
-            //I need to do a check if the below pixel is a liquid and if this weight is heavier
+        //Check below
+        check.x = this.position.x;
+        check.y = this.position.y+1;
+        if(this.can_fall_down(check)){
+            this.position = check;
+            return;
+        }
+        
+        //Randomly check left or right first
+        double random_value = Math.random();
+        int next_value;
+        int last_value;
+        if(random_value > .5){
+            next_value = -1;
+            last_value = 1;
+        }
+        else{
+            next_value = 1;
+            last_value = -1;
         }
 
-        //Check Below Right
-        check = new Vector2d(this.position.x+1,this.position.y+1);
-        if(CellularAutomata.get().pos_allowed(check)){
-            if(CellularAutomata.get().pos_empty(check,false)){
-                this.position = check;
-                CellularAutomata.get().add_pixel(this, check, true);
-                if(this.position.y>=CellularAutomata.get().get_height()){
-                    this.force_still();
-                }
-                return;
-            }
-            
+        //Check either below left or below right
+        check.x = this.position.x + next_value;
+        check.y = this.position.y+1;
+        if(this.can_fall_down(check)){
+            this.position = check;
+            return;
+        }
+        
+        //Check either below left or below right
+        check.x = this.position.x + last_value;
+        check.y = this.position.y+1;
+        if(this.can_fall_down(check)){
+            this.position = check;
+            return;
         }
 
-        //Check Below Left
-        check = new Vector2d(this.position.x-1,this.position.y+1);
-        if(CellularAutomata.get().pos_allowed(check)){
-            if(CellularAutomata.get().pos_empty(check,false)){
-                this.position = check;
-                CellularAutomata.get().add_pixel(this, check, true);
-                if(this.position.y>=CellularAutomata.get().get_height()){
-                    this.force_still();
-                }
-                return;
-            }
-            
-        }
-
-        this.force_still();
-        CellularAutomata.get().add_pixel(this, this.position, true);
+        //If it can nto do any of the above, then it must not be moveable
+        this.is_falling = false;
         
     }
 
-    protected void set_above_still(){
-        //Check left
-        Vector2d check = new Vector2d(this.position.x-1,this.position.y);
-        if(CellularAutomata.get().pos_allowed(check)){
-            if(CellularAutomata.get().pos_empty(check,true)){
-                CellularAutomata.get().add_pixel(this, this.position, true);
-                return;
+    private boolean can_fall_down(Vector2d check_pos){
+        if(CellularAutomata.get().pos_allowed(check_pos)){
+            if(CellularAutomata.get().pos_empty(check_pos, false)){
+                return true;
+            }
+            else{
+                Pixel pixel = CellularAutomata.get().get_pixel(check_pos, false);
+                if(pixel instanceof Moveable_Solid){
+                    if(((Moveable_Solid)pixel).get_is_falling()){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                else{
+                    return false;
+                }
             }
         }
-
-        //Check right
-        check = new Vector2d(this.position.x+1,this.position.y);
-        if(CellularAutomata.get().pos_allowed(check)){
-            if(CellularAutomata.get().pos_empty(check,true)){
-                CellularAutomata.get().add_pixel(this, this.position, true);
-                return;
-            }
+        else{
+            return false;
         }
-
-        //Check above
-        check = new Vector2d(this.position.x,this.position.y-1);
-        if(CellularAutomata.get().pos_allowed(check)){
-            if(CellularAutomata.get().pos_empty(check,true)){
-                CellularAutomata.get().add_pixel(this, this.position, true);
-                return;
-            }
-
-            Pixel temp = CellularAutomata.get().get_pixel(check, true);
-            if((temp.getClass() == Moveable_Solid.class)){
-                CellularAutomata.get().add_pixel(this, this.position, true);
-                ((Moveable_Solid) temp).force_still();
-                return;
-            }            
-        }
-
     }
 
     public boolean get_is_falling(){

@@ -19,5 +19,18 @@ public class Element extends Pixel{
     public static void set_counter(int value){
         counter = value;
     }
+
+    // public static int get_counter(){
+    //     return counter;
+    // }
+
+    public static void increment_counter(){
+        if(counter >= 61){
+            counter = 1;
+        }
+        else{
+            ++counter;
+        }
+    }
     
 }
