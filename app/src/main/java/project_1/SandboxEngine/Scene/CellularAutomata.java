@@ -1,5 +1,7 @@
 package project_1.SandboxEngine.Scene;
 
+import java.util.ArrayList;
+
 import org.joml.Vector2d;
 
 import javafx.css.SimpleStyleableDoubleProperty;
@@ -22,7 +24,8 @@ public class CellularAutomata {
 
     //Always make changes to this grid.
     private Pixel[][] buffer_grid;
-    // public Pixel[][] pixel_array;
+    
+    private ArrayList<Pixel> second_update_buffer;
 
     //These values describe the total draw space.
     private int total_width;
@@ -59,6 +62,7 @@ public class CellularAutomata {
         CellularAutomata.get().total_pixels = CellularAutomata.get().total_height*CellularAutomata.get().total_width;
         CellularAutomata.get().current_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
         CellularAutomata.get().buffer_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
+        CellularAutomata.get().second_update_buffer = new ArrayList<Pixel>(CellularAutomata.get().total_pixels);
         CellularAutomata.get().empty_curr_grid();
         CellularAutomata.get().empty_buff_grid();
 
@@ -76,6 +80,7 @@ public class CellularAutomata {
         SQUARE_SIZE = SceneManager.get_height()*0.75*0.01;
         // System.out.println("Cellular Automata Update call");
         CellularAutomata.get().empty_buff_grid();
+        CellularAutomata.get().empty_second_update_buffer();
         Element.increment_counter();
         Special.increment_counter();
         for(int col=0; col<CellularAutomata.get().total_width; ++col){
@@ -98,30 +103,12 @@ public class CellularAutomata {
             }
         }
 
-        // if(Conway.is_animating() && Conway.getModeSelector() == 1){
-        //     //First Iteration, pick a random point, we will just select one near the center for now.
-        //     //Gets next position for the ant, and the next_ant
-        //     if(ant == null){
-        //         ant = new Vector2d(CellularAutomata.get().total_width / 2, CellularAutomata.get().total_height / 2);
-        //         System.out.println(ant);
-        //         next_ant = new Vector2d(Conway.applyLangstonAntRules(ant));
-        //         System.out.println(next_ant);
-        //     } else{
-        //         ant = next_ant;
-        //         next_ant = new Vector2d(Conway.applyLangstonAntRules(ant));
-        //     }
-
-        //     // Can handle any type of cell, essentially eating away and reforming the grid, 
-        //     // If there is an empty cell that needs to be filled in, use a Conway cell, if a cell needs to be flipped, remove the cell from the grid.
-        //     if(CellularAutomata.get().pos_empty(ant, false)){
-        //         CellularAutomata.get().add_pixel(new Conway(ant, true), ant, true);
-        //         System.out.print("This ant was empty");
-        //     } else{
-        //         CellularAutomata.get().remove_pixel(ant);
-        //                         System.out.print("This ant wasnt empty");
-        //     }
-        //     System.out.println(next_ant);
-        // }
+        //Do any secondary updates if needed
+        if(CellularAutomata.get().second_update_buffer.isEmpty() == false){
+            for(Pixel pixel:CellularAutomata.get().second_update_buffer){
+                pixel.second_update();
+            }
+        }
     }
 
     public void draw(){
@@ -143,6 +130,10 @@ public class CellularAutomata {
 
     public void empty_buff_grid(){
         CellularAutomata.get().buffer_grid = new Pixel[CellularAutomata.get().total_width][CellularAutomata.get().total_height];
+    }
+
+    public void empty_second_update_buffer(){
+        CellularAutomata.get().second_update_buffer.clear();
     }
 
     //------------------------------------------------------------------------------------------
@@ -170,6 +161,38 @@ public class CellularAutomata {
         }
         else{
             CellularAutomata.get().current_grid[(int)position.x][(int)position.y] = pixel;
+        }
+    }
+
+    public void needs_second_update(Pixel pixel){
+        CellularAutomata.get().second_update_buffer.add(pixel);
+    }
+
+    public void swap_pixels(Pixel pixelA, Pixel pixelB, boolean buffer_array){
+        Vector2d posA = pixelA.get_position();
+        Vector2d posB = pixelB.get_position();
+
+        this.swap_pixels(posA, posB, buffer_array);
+    }
+
+    public void swap_pixels(Vector2d posA, Vector2d posB, boolean buffer_array){
+        if(buffer_array){
+            Pixel temp_pixel = CellularAutomata.get().buffer_grid[(int)posA.x][(int)posA.y];
+
+            CellularAutomata.get().buffer_grid[(int)posA.x][(int)posA.y] = CellularAutomata.get().buffer_grid[(int)posB.x][(int)posB.y];
+            CellularAutomata.get().buffer_grid[(int)posA.x][(int)posA.y].set_position(posA);
+
+            CellularAutomata.get().buffer_grid[(int)posB.x][(int)posB.y] = temp_pixel;
+            CellularAutomata.get().buffer_grid[(int)posB.x][(int)posB.y].set_position(posB);
+        }
+        else{
+            Pixel temp_pixel = CellularAutomata.get().current_grid[(int)posA.x][(int)posA.y];
+
+            CellularAutomata.get().current_grid[(int)posA.x][(int)posA.y] = CellularAutomata.get().current_grid[(int)posB.x][(int)posB.y];
+            CellularAutomata.get().current_grid[(int)posA.x][(int)posA.y].set_position(posA);
+
+            CellularAutomata.get().current_grid[(int)posB.x][(int)posB.y] = temp_pixel;
+            CellularAutomata.get().current_grid[(int)posB.x][(int)posB.y].set_position(posB);
         }
     }
 

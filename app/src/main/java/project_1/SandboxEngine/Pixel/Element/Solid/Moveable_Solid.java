@@ -23,7 +23,7 @@ public class Moveable_Solid extends Solid {
     public void update(){
         if((Element.counter % this.fall_rate)==0){
             this.fall_down_solid();
-            CellularAutomata.get().add_pixel(this, this.position, true);
+            // CellularAutomata.get().add_pixel(this, this.position, true);
         }
         else{
             CellularAutomata.get().add_pixel(this, this.position, true);
@@ -36,8 +36,9 @@ public class Moveable_Solid extends Solid {
         //Check below
         check.x = this.position.x;
         check.y = this.position.y+1;
-        if(this.can_fall_down(check)){
+        if(this.can_fall_check(check)){
             this.position = check;
+            CellularAutomata.get().add_pixel(this, this.position, true);
             return;
         }
         
@@ -57,25 +58,28 @@ public class Moveable_Solid extends Solid {
         //Check either below left or below right
         check.x = this.position.x + next_value;
         check.y = this.position.y+1;
-        if(this.can_fall_down(check)){
+        if(this.can_fall_check(check)){
             this.position = check;
+            CellularAutomata.get().add_pixel(this, this.position, true);
             return;
         }
         
         //Check either below left or below right
         check.x = this.position.x + last_value;
         check.y = this.position.y+1;
-        if(this.can_fall_down(check)){
+        if(this.can_fall_check(check)){
             this.position = check;
+            CellularAutomata.get().add_pixel(this, this.position, true);
             return;
         }
 
-        //If it can nto do any of the above, then it must not be moveable
+        //If it can not do any of the above, then it must not be moveable
         this.is_falling = false;
+        CellularAutomata.get().add_pixel(this, this.position, true);
         
     }
 
-    private boolean can_fall_down(Vector2d check_pos){
+    private boolean can_fall_check(Vector2d check_pos){
         if(CellularAutomata.get().pos_allowed(check_pos)){
             if(CellularAutomata.get().pos_empty(check_pos, false)){
                 return true;

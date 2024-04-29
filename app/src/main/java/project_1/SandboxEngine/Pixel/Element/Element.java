@@ -8,7 +8,6 @@ import project_1.SandboxEngine.Pixel.PixelType;
 public class Element extends Pixel{
 
     protected double weight;
-    protected int time_step;
     protected static int counter;
 
     public Element(PixelType name, int id, double weight, Vector2d position){
@@ -20,9 +19,9 @@ public class Element extends Pixel{
         counter = value;
     }
 
-    // public static int get_counter(){
-    //     return counter;
-    // }
+    public static int get_counter(){
+        return counter;
+    }
 
     public static void increment_counter(){
         if(counter >= 61){
@@ -31,6 +30,10 @@ public class Element extends Pixel{
         else{
             ++counter;
         }
+    }
+
+    public double get_weight(){
+        return weight;
     }
     
 }

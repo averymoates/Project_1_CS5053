@@ -113,4 +113,8 @@ abstract public class Pixel {
         this.square_size = CellularAutomata.get().get_square_size();
         CellularAutomata.get().add_pixel(this, this.position, true);
     }
+
+    public void second_update(){
+        return;
+    }
 }

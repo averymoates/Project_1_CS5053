@@ -15,7 +15,6 @@ public class Sand_pixel extends Moveable_Solid{
     public Sand_pixel(Vector2d position){
         super(PixelType.SAND, 1, 2, 5, position);
         this.set_random_sand_color();
-        this.time_step = 0;
     }
 
     private void set_random_sand_color(){
